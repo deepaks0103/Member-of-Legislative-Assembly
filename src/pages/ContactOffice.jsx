@@ -33,8 +33,8 @@ const ContactOffice = () => {
   // District Collector Office Coordinates & Map Embed URL
   const officeLat = 11.7387;
   const officeLng = 78.9609;
-  const mapEmbedUrl = `https://maps.google.com/maps?q=District+Collector+Office,+Kachirapalayam+Road,+Kallakurichi,+Tamil+Nadu+606202&t=&z=16&ie=UTF8&iwloc=&output=embed`;
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=District+Collector+Office,+Kachirapalayam+Road,+Kallakurichi`;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${officeLat},${officeLng}&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${officeLat},${officeLng}`;
 
   // Social Links config - only renders items with URLs
   const socialLinks = [
@@ -408,7 +408,7 @@ const ContactOffice = () => {
           <div className="mt-3 flex items-center gap-2 text-xs text-primary bg-primary/5 border border-primary/15 rounded-xl px-3.5 py-2.5">
             <MapPin size={15} className="text-primary shrink-0" />
             <span className="font-semibold">
-              {t('contact_map_placeholder_note', 'District Collectorate Complex, Veeracholapuram, Kallakurichi - 606202')}
+              {t('contact_map_placeholder_note', 'District Collector Office, Kachirapalayam Road, Kallakurichi - 606202')}
             </span>
           </div>
         </div>
