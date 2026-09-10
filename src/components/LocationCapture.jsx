@@ -255,9 +255,8 @@ const LocationCapture = ({ value, onChange, constituencyName = 'Kallakurichi' })
       </h3>
 
       {/* Helper text above button */}
-      <p className={`text-[11px] sm:text-xs leading-relaxed transition-colors ${
-        status === 'success' ? 'text-emerald-700 font-medium' : 'text-gray-500'
-      }`}>
+      <p className={`text-[11px] sm:text-xs leading-relaxed transition-colors ${status === 'success' ? 'text-emerald-700 font-medium' : 'text-gray-500'
+        }`}>
         {getHelperTextAbove()}
       </p>
 
@@ -326,7 +325,7 @@ const LocationCapture = ({ value, onChange, constituencyName = 'Kallakurichi' })
                 {getStatusLineText()}
               </span>
             </div>
-            
+
             {/* Raw coordinates right-aligned */}
             <span className="text-[11px] sm:text-xs text-gray-500 font-mono sm:text-right">
               {locationData.lat}, {locationData.lng}

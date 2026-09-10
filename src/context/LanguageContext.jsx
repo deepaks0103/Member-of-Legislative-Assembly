@@ -39,10 +39,39 @@ export const LanguageProvider = ({ children }) => {
     if (currentDict && currentDict[key] !== undefined) {
       return currentDict[key];
     }
-    // Fallback to English dictionary if key missing in current language
-    if (translations.en && translations.en[key] !== undefined) {
-      return translations.en[key];
+    
+    // Check underscore format if dot was passed (e.g. track.title -> track_title)
+    const underscoreKey = key.replace(/\./g, '_');
+    if (currentDict && currentDict[underscoreKey] !== undefined) {
+      return currentDict[underscoreKey];
     }
+
+    // Check specific prompt alias mappings
+    const keyMap = {
+      'track.placeholder.complaintId': 'track_ph_id',
+      'track.helper.findId': 'track_helper_find_id',
+      'track.error.invalidId': 'track_err_invalid_id',
+      'track.error.notFound': 'track_err_not_found',
+      'track.status.queuedMessage': 'track_status_queued_message',
+      'track.status.submitted': 'track_status_submitted',
+      'track.status.underReview': 'track_status_under_review',
+      'track.status.assigned': 'track_status_assigned',
+      'track.status.actionTaken': 'track_status_action_taken',
+      'track.status.resolved': 'track_status_resolved',
+      'track.status.rejected': 'track_status_rejected',
+    };
+
+    if (keyMap[key] && currentDict && currentDict[keyMap[key]] !== undefined) {
+      return currentDict[keyMap[key]];
+    }
+
+    // Fallback to English dictionary if key missing in current language
+    if (translations.en) {
+      if (translations.en[key] !== undefined) return translations.en[key];
+      if (translations.en[underscoreKey] !== undefined) return translations.en[underscoreKey];
+      if (keyMap[key] && translations.en[keyMap[key]] !== undefined) return translations.en[keyMap[key]];
+    }
+
     return fallback || key;
   };
 

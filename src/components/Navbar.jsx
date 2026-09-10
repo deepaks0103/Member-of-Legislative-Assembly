@@ -25,29 +25,29 @@ const Navbar = () => {
         <div className="flex justify-between h-14 md:h-16 items-center">
 
           {/* Logo Section */}
-          <div className="flex items-center space-x-1.5 sm:space-x-2 md:space-x-3 min-w-0">
+          <div className="flex items-center space-x-1.5 sm:space-x-2 md:space-x-2.5 min-w-0">
             <img
               src="/TVK_Logo.png"
               alt="TN Govt Logo"
               className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 object-contain shrink-0"
             />
             <div className="flex flex-col min-w-0">
-              <span className="mla-title text-primary font-bold text-sm sm:text-base md:text-xl lg:text-2xl leading-tight mt-0.5 md:mt-1 truncate">
-                {t('mla_name', 'C. Arul Vignesh')} <span className="text-[10px] sm:text-xs md:text-sm font-semibold">{t('mla_qualification', 'M.Sc.,MLA')}</span>
+              <span className={`mla-title text-primary font-bold text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-tight mt-0.5 truncate ${language === 'ta' ? 'tracking-tight' : ''}`}>
+                {t('mla_name', 'C. Arul Vignesh')}&nbsp;<span className="text-[10px] sm:text-xs md:text-sm font-semibold">{t('mla_qualification', 'M.Sc.,MLA')}</span>
               </span>
-              <span className="mla-subtitle text-primary text-[10px] sm:text-xs md:text-sm font-medium truncate">
+              <span className={`mla-subtitle text-primary text-[10px] sm:text-xs md:text-xs lg:text-sm font-medium truncate ${language === 'ta' ? 'tracking-tight text-[9px] sm:text-[11px] md:text-xs lg:text-[13px]' : ''}`}>
                 {t('mla_designation', 'Kallakurichi Member of Legislative Assembly')}
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <div className="navbar-nav hidden lg:flex items-center space-x-8">
+          <div className={`navbar-nav hidden lg:flex items-center ${language === 'ta' ? 'space-x-3.5 xl:space-x-5 text-[13px] xl:text-sm' : 'space-x-4 xl:space-x-7 text-sm'}`}>
             {navLinksBefore.map((link, index) => (
               <Link
                 key={index}
                 to={link.path}
-                className={`nav-link text-sm font-semibold transition whitespace-nowrap ${location.pathname === link.path
+                className={`nav-link font-semibold transition whitespace-nowrap ${location.pathname === link.path
                     ? 'text-primary border-b-2 border-primary pb-1'
                     : 'text-primary/80 hover:text-primary'
                   }`}
@@ -88,7 +88,7 @@ const Navbar = () => {
               <Link
                 key={index}
                 to={link.path}
-                className={`nav-link text-sm font-semibold transition whitespace-nowrap ${location.pathname === link.path
+                className={`nav-link font-semibold transition whitespace-nowrap ${location.pathname === link.path
                     ? 'text-primary border-b-2 border-primary pb-1'
                     : 'text-primary/80 hover:text-primary'
                   }`}

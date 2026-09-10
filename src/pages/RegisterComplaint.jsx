@@ -22,7 +22,7 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
 import LocationCapture from '../components/LocationCapture';
-import { grievanceCategoriesData, defaultCategories } from '../data/grievanceCategories';
+import { grievanceCategoriesData, defaultCategories, grievanceTypes } from '../data/grievanceCategories';
 import { useLanguage } from '../context/LanguageContext';
 
 const wardsList = [
@@ -53,21 +53,6 @@ const wardsList = [
   { id: 'sankarapuram', en: 'Sankarapuram Area', ta: 'சங்கராபுரம் பகுதி' },
   { id: 'rishivandiyam', en: 'Rishivandiyam Area', ta: 'ரிஷிவந்தியம் பகுதி' },
   { id: 'other_outside', en: 'Other / Outside Kallakurichi Constituency', ta: 'பிற / தொகுதிக்கு வெளியே' },
-];
-
-const grievanceTypes = [
-  { id: 'water', en: 'Drinking Water Supply', ta: 'குடிநீர் விநியோகம்' },
-  { id: 'electricity', en: 'Street Lights & Electricity', ta: 'தெருவிளக்கு & மின்சாரம்' },
-  { id: 'roads', en: 'Roads, Potholes & Footpaths', ta: 'சாலை & குண்டும் குழியும்' },
-  { id: 'drainage', en: 'Drainage & Sewage Disposal', ta: 'சாக்கடை & கழிவுநீர் வடிகால்' },
-  { id: 'sanitation', en: 'Sanitation & Solid Waste Collection', ta: 'துப்புரவு & குப்பை மேலாண்மை' },
-  { id: 'health', en: 'Healthcare & Primary Health Center', ta: 'சுகாதாரம் & ஆரம்ப சுகாதார நிலையம்' },
-  { id: 'agriculture', en: 'Agriculture & Irrigation Canals', ta: 'விவசாயம் & பாசன வாய்க்கால்' },
-  { id: 'revenue_ration', en: 'Revenue, Ration Card & PDS Supply', ta: 'வருவாய்த்துறை & ரேஷன் கார்டு' },
-  { id: 'transport', en: 'Public Transport & Bus Stop Facilities', ta: 'பொது போக்குவரத்து & பேருந்து நிறுத்தம்' },
-  { id: 'schools', en: 'Government Schools & Anganwadi', ta: 'அரசு பள்ளிகள் & அங்கன்வாடி' },
-  { id: 'parks_hall', en: 'Community Hall, Playground & Parks', ta: 'சமுதாயக்கூடம் & பூங்காக்கள்' },
-  { id: 'other', en: 'Other Civic Grievances', ta: 'பிற பொது பிரச்சனைகள்' },
 ];
 
 const RegisterComplaint = () => {
@@ -112,6 +97,7 @@ const RegisterComplaint = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submittedData, setSubmittedData] = useState(null);
   const [copiedId, setCopiedId] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   // Scroll to top on mount
   useEffect(() => {
@@ -365,9 +351,11 @@ const RegisterComplaint = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit Handler
+  // Submit Handler - Pure Frontend Local Mock
   const handleSubmit = (e) => {
     e.preventDefault();
+    setSubmitError('');
+
     if (!validateForm()) {
       const firstErrorKey = Object.keys(errors)[0];
       const el = document.querySelector(`[name="${firstErrorKey}"]`);
@@ -379,6 +367,7 @@ const RegisterComplaint = () => {
 
     setIsSubmitting(true);
 
+    // Generate client-side mock Complaint ID (e.g., KLK-2026-XXXXX)
     const randomNum = Math.floor(10000 + Math.random() * 90000);
     const refId = `KLK-2026-${randomNum}`;
 
@@ -399,16 +388,9 @@ const RegisterComplaint = () => {
     };
 
     setTimeout(() => {
-      try {
-        const existing = JSON.parse(localStorage.getItem('cdo_complaints') || '[]');
-        localStorage.setItem('cdo_complaints', JSON.stringify([complaintRecord, ...existing]));
-      } catch (err) {
-        console.error('Error saving complaint to localStorage:', err);
-      }
-
       setIsSubmitting(false);
       setSubmittedData(complaintRecord);
-    }, 900);
+    }, 500);
   };
 
   const handleCopyId = () => {
@@ -436,6 +418,7 @@ const RegisterComplaint = () => {
     removeAudioRecording();
     setAttachments([]);
     setErrors({});
+    setSubmitError('');
     setSubmittedData(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -905,6 +888,17 @@ const RegisterComplaint = () => {
                   )}
                 </div>
               </div>
+
+              {/* Submit Error Banner */}
+              {submitError && (
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 text-xs text-red-700 animate-in fade-in">
+                  <AlertCircle size={18} className="text-red-600 shrink-0 mt-0.5" />
+                  <div>
+                    <strong className="font-bold block mb-0.5">Submission Error</strong>
+                    <span>{submitError}</span>
+                  </div>
+                </div>
+              )}
 
               {/* Submit Button */}
               <div className="pt-8">

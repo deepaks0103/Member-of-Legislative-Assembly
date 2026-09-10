@@ -7,6 +7,7 @@ export const grievanceCategoriesData = {
       { id: 'tanker_request', label: 'Water tanker supply request' },
       { id: 'ro_plant', label: 'RO drinking water plant repair' },
       { id: 'motor_handpump', label: 'Handpump / Mini power pump repair' },
+      { id: 'new_water_connection', label: 'New Water Connection Request' },
     ],
     ta: [
       { id: 'low_pressure', label: 'குறைந்த நீர் அழுத்தம் / தண்ணீர் வரவில்லை' },
@@ -15,16 +16,18 @@ export const grievanceCategoriesData = {
       { id: 'tanker_request', label: 'குடிநீர் லாரி விநியோகக் கோரிக்கை' },
       { id: 'ro_plant', label: 'RO சுத்திகரிப்பு ஆலை பழுது' },
       { id: 'motor_handpump', label: 'கைபம்பு / மினி பவர் பம்பு பழுது' },
+      { id: 'new_water_connection', label: 'புதிய குடிநீர் இணைப்பு கோரிக்கை' },
     ]
   },
   electricity: {
     en: [
-      { id: 'street_light_off', label: 'Street light not working' },
-      { id: 'voltage_fluctuation', label: 'High / Low voltage fluctuation' },
-      { id: 'live_wires', label: 'Exposed live electric wires' },
-      { id: 'transformer_spark', label: 'Transformer damaged / spark' },
-      { id: 'frequent_powercuts', label: 'Frequent unannounced power cuts' },
-      { id: 'new_pole_request', label: 'New street light pole request' },
+      { id: 'street_light_off', label: 'Street Light Not Working' },
+      { id: 'voltage_fluctuation', label: 'High / Low Voltage Fluctuation' },
+      { id: 'live_wires', label: 'Exposed / Dangerous Electric Wires' },
+      { id: 'transformer_spark', label: 'Damaged Transformer / Sparking' },
+      { id: 'frequent_powercuts', label: 'Frequent Unannounced Power Cuts' },
+      { id: 'new_pole_request', label: 'New Street Light / Pole Request' },
+      { id: 'meter_connection_issue', label: 'Electricity Connection / Meter Issue' },
     ],
     ta: [
       { id: 'street_light_off', label: 'தெருவிளக்கு எரியவில்லை' },
@@ -32,41 +35,48 @@ export const grievanceCategoriesData = {
       { id: 'live_wires', label: 'அபாயகரமான திறந்த மின்சார கம்பிகள்' },
       { id: 'transformer_spark', label: 'மின்மாற்றி பழுது / தீப்பொறி' },
       { id: 'frequent_powercuts', label: 'அடிக்கடி அறிவிக்கப்படாத மின்தடை' },
-      { id: 'new_pole_request', label: 'புதிய தெருவிளக்கு கம்பக் கோரிக்கை' },
+      { id: 'new_pole_request', label: 'புதிய தெருவிளக்கு / மின்கம்பக் கோரிக்கை' },
+      { id: 'meter_connection_issue', label: 'மின் இணைப்பு / மீட்டர் பிரச்சனை' },
     ]
   },
   roads: {
     en: [
-      { id: 'severe_potholes', label: 'Severe potholes on road' },
-      { id: 'damaged_surface', label: 'Road surface damaged / unpaved' },
-      { id: 'new_tar_road', label: 'Request for new tar / concrete road' },
-      { id: 'speed_breaker', label: 'Speed breaker needed near crossing' },
-      { id: 'road_encroachment', label: 'Encroachment on road / footpath' },
-      { id: 'waterlogging_road', label: 'Waterlogging on road during rain' },
+      { id: 'severe_potholes', label: 'Severe Potholes on Road' },
+      { id: 'damaged_surface', label: 'Damaged / Unpaved Road' },
+      { id: 'new_tar_road', label: 'Request for New Tar / Concrete Road' },
+      { id: 'speed_breaker', label: 'Speed Breaker Required' },
+      { id: 'footpath_encroachment', label: 'Damaged Footpath / Encroachment' },
+      { id: 'waterlogging_road', label: 'Waterlogging on Road During Rain' },
+      { id: 'road_repair_maintenance', label: 'Road Repair / Maintenance Request' },
     ],
     ta: [
       { id: 'severe_potholes', label: 'சாலையில் உள்ள ஆபத்தான குண்டும் குழியும்' },
-      { id: 'damaged_surface', label: 'சாலை சேதம் / ஜல்லி பெயர்ந்தது' },
+      { id: 'damaged_surface', label: 'சாலை சேதம் / தார் பெயர்ந்த மண் சாலை' },
       { id: 'new_tar_road', label: 'புதிய தார் / சிமெண்ட் சாலை கோரிக்கை' },
       { id: 'speed_breaker', label: 'வேகத்தடை அமைத்தல் கோரிக்கை' },
-      { id: 'road_encroachment', label: 'சாலை / நடைபாதை ஆக்கிரமிப்பு' },
+      { id: 'footpath_encroachment', label: 'நடைபாதை சேதம் / ஆக்கிரமிப்பு' },
       { id: 'waterlogging_road', label: 'மழைநீர் தேங்கும் சாலைப் பகுதி' },
+      { id: 'road_repair_maintenance', label: 'சாலை பராமரிப்பு & சீரமைப்பு கோரிக்கை' },
     ]
   },
   drainage: {
     en: [
-      { id: 'blocked_drain', label: 'Blocked drain / sewage overflow' },
-      { id: 'foul_water', label: 'Stagnant foul-smelling wastewater' },
-      { id: 'broken_manhole', label: 'Broken drainage slab / open manhole' },
-      { id: 'underground_drain', label: 'Need for underground drainage connection' },
-      { id: 'desilting_needed', label: 'Desilting & drain cleaning required' },
+      { id: 'blocked_drain', label: 'Blocked Drain / Sewage Overflow' },
+      { id: 'foul_water', label: 'Stagnant / Foul-Smelling Wastewater' },
+      { id: 'broken_manhole', label: 'Broken Drainage Slab / Open Manhole' },
+      { id: 'underground_drain', label: 'Underground Drainage Connection Request' },
+      { id: 'desilting_needed', label: 'Desilting / Drain Cleaning Required' },
+      { id: 'stormwater_drain', label: 'Damaged / Blocked Stormwater Drain' },
+      { id: 'sewage_leakage', label: 'Sewage Leakage / Pipeline Damage' },
     ],
     ta: [
       { id: 'blocked_drain', label: 'அடைபட்ட சாக்கடை / கழிவுநீர் வழிந்தோடல்' },
       { id: 'foul_water', label: 'தேங்கி நிற்கும் துர்நாற்ற கழிவுநீர்' },
       { id: 'broken_manhole', label: 'உடைந்த சாக்கடை மூடி / திறந்த மேன்ஹோல்' },
       { id: 'underground_drain', label: 'பாதாள சாக்கடை இணைப்பு கோரிக்கை' },
-      { id: 'desilting_needed', label: 'சாக்கடை தூர்வாருதல் தேவை' },
+      { id: 'desilting_needed', label: 'சாக்கடை தூர்வாருதல் & சுத்தம் செய்தல் தேவை' },
+      { id: 'stormwater_drain', label: 'சேதமடைந்த / அடைபட்ட மழைநீர் வடிகால்' },
+      { id: 'sewage_leakage', label: 'கழிவுநீர் கசிவு / குழாய் சேதம்' },
     ]
   },
   sanitation: {
@@ -219,3 +229,19 @@ export const defaultCategories = {
     { id: 'general_feedback', label: 'பொது மக்கள் கருத்து & பரிந்துரை' },
   ]
 };
+
+export const grievanceTypes = [
+  { id: 'water', en: 'Drinking Water Supply', ta: 'குடிநீர் விநியோகம்' },
+  { id: 'electricity', en: 'Street Lights & Electricity', ta: 'தெருவிளக்கு & மின்சாரம்' },
+  { id: 'roads', en: 'Roads, Potholes & Footpaths', ta: 'சாலை & குண்டும் குழியும்' },
+  { id: 'drainage', en: 'Drainage & Sewage', ta: 'சாக்கடை & கழிவுநீர்' },
+  { id: 'sanitation', en: 'Sanitation & Waste Collection', ta: 'துப்புரவு & குப்பை மேலாண்மை' },
+  { id: 'health', en: 'Healthcare & Government Hospitals', ta: 'சுகாதாரம் & அரசு மருத்துவமனை' },
+  { id: 'agriculture', en: 'Agriculture & Irrigation', ta: 'விவசாயம் & பாசனம்' },
+  { id: 'revenue_ration', en: 'Ration Card & PDS Services', ta: 'ரேஷன் கார்டு & பொது விநியோகம்' },
+  { id: 'transport', en: 'Public Transport & Bus Stops', ta: 'பொது போக்குவரத்து & பேருந்து நிறுத்தம்' },
+  { id: 'schools', en: 'Schools & Anganwadi', ta: 'பள்ளிகள் & அங்கன்வாடி' },
+  { id: 'parks_hall', en: 'Parks, Playgrounds & Community Halls', ta: 'பூங்கா, விளையாட்டு மைதானம் & சமுதாயக்கூடம்' },
+  { id: 'other', en: 'Other Public Issues', ta: 'பிற பொது பிரச்சனைகள்' },
+];
+
