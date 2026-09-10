@@ -1,17 +1,17 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { 
-  Mic, 
-  Square, 
-  Upload, 
-  Paperclip, 
-  X, 
-  CheckCircle2, 
-  AlertCircle, 
-  Loader2, 
-  Copy, 
-  Check, 
-  Volume2, 
-  Trash2, 
+import {
+  Mic,
+  Square,
+  Upload,
+  Paperclip,
+  X,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
+  Copy,
+  Check,
+  Volume2,
+  Trash2,
   FileText,
   Play,
   Pause,
@@ -148,7 +148,7 @@ const RegisterComplaint = () => {
   // Handle Form Input Change
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     // When Grievance changes, reset category selection to force fresh valid pick
     if (name === 'grievanceType') {
       setFormData((prev) => ({
@@ -447,29 +447,28 @@ const RegisterComplaint = () => {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#f8f9fa]">
+    <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
       <Navbar />
 
-      <main className="flex-grow py-4 sm:py-8 px-2.5 sm:px-6 lg:px-8">
-        <div className="max-w-[420px] sm:max-w-xl mx-auto">
-          
-          {/* Main White Card Container */}
-          <div className="form-card p-3.5 sm:p-6 md:p-8 transition-all bg-white rounded-lg border border-gray-200/90 shadow-xs">
-            
+      <main className="flex-grow py-5 sm:py-10 px-3 sm:px-6 lg:px-8">
+        <div className="max-w-[430px] sm:max-w-xl mx-auto">
+
+          {/* Main Card Container */}
+          <div className="form-card p-4 sm:p-7 md:p-8 transition-all">
+
             <form onSubmit={handleSubmit} noValidate>
-              
+
               {/* SECTION 1: YOUR DETAILS */}
-              <div className="space-y-2.5">
+              <div className="space-y-3.5">
                 <h2 className="section-title">
                   {t('sec_your_details', 'YOUR DETAILS')}
                 </h2>
 
-                {/* 2-column inline row */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                   {/* Full Name */}
                   <div>
                     <label className="form-label">
-                      {t('lbl_full_name', 'Full Name')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                      {t('lbl_full_name', 'Full Name')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                     </label>
                     <input
                       type="text"
@@ -477,11 +476,11 @@ const RegisterComplaint = () => {
                       value={formData.fullName}
                       onChange={handleChange}
                       placeholder={t('ph_full_name', 'Your full name')}
-                      className={`form-input ${errors.fullName ? 'border-red-500 bg-red-50/20' : ''}`}
+                      className={`form-input ${errors.fullName ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                     />
                     {errors.fullName && (
-                      <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                        <AlertCircle size={11} /> {errors.fullName}
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.fullName}
                       </p>
                     )}
                   </div>
@@ -489,7 +488,7 @@ const RegisterComplaint = () => {
                   {/* Mobile Number */}
                   <div>
                     <label className="form-label">
-                      {t('lbl_mobile_number', 'Mobile Number')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                      {t('lbl_mobile_number', 'Mobile Number')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                     </label>
                     <input
                       type="tel"
@@ -498,20 +497,20 @@ const RegisterComplaint = () => {
                       value={formData.mobileNumber}
                       onChange={handleChange}
                       placeholder={t('ph_mobile_number', '10-digit mobile number')}
-                      className={`form-input ${errors.mobileNumber ? 'border-red-500 bg-red-50/20' : ''}`}
+                      className={`form-input ${errors.mobileNumber ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                     />
                     {errors.mobileNumber && (
-                      <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                        <AlertCircle size={11} /> {errors.mobileNumber}
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.mobileNumber}
                       </p>
                     )}
                   </div>
                 </div>
 
-                {/* Address Full-width row */}
+                {/* Address */}
                 <div>
                   <label className="form-label">
-                    {t('lbl_address', 'Address')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                    {t('lbl_address', 'Address')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                   </label>
                   <input
                     type="text"
@@ -519,21 +518,21 @@ const RegisterComplaint = () => {
                     value={formData.address}
                     onChange={handleChange}
                     placeholder={t('ph_address', 'House no., street, area, landmark')}
-                    className={`form-input ${errors.address ? 'border-red-500 bg-red-50/20' : ''}`}
+                    className={`form-input ${errors.address ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                   />
                   {errors.address && (
-                    <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                      <AlertCircle size={11} /> {errors.address}
+                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                      <AlertCircle size={12} /> {errors.address}
                     </p>
                   )}
                 </div>
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-gray-200 my-3.5" />
+              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
 
               {/* SECTION 2: LOCATION */}
-              <div className="space-y-2.5">
+              <div className="space-y-3.5">
                 <h2 className="section-title">
                   {t('sec_location', 'LOCATION')}
                 </h2>
@@ -541,16 +540,15 @@ const RegisterComplaint = () => {
                 {/* Ward / Constituency Area */}
                 <div>
                   <label className="form-label">
-                    {t('lbl_ward_area', 'Ward / Constituency Area')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                    {t('lbl_ward_area', 'Ward / Constituency Area')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                   </label>
                   <div className="relative">
                     <select
                       name="wardArea"
                       value={formData.wardArea}
                       onChange={handleChange}
-                      className={`form-select appearance-none pr-8 cursor-pointer ${
-                        !formData.wardArea ? 'text-gray-400' : 'text-gray-900'
-                      } ${errors.wardArea ? 'border-red-500 bg-red-50/20' : ''}`}
+                      className={`form-select appearance-none pr-10 cursor-pointer ${!formData.wardArea ? 'text-gray-400' : 'text-gray-900'
+                        } ${errors.wardArea ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                     >
                       <option value="" disabled>
                         {t('ph_select_ward', 'Select ward or area')}
@@ -561,11 +559,11 @@ const RegisterComplaint = () => {
                         </option>
                       ))}
                     </select>
-                    <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                    <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                   </div>
                   {errors.wardArea && (
-                    <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                      <AlertCircle size={11} /> {errors.wardArea}
+                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                      <AlertCircle size={12} /> {errors.wardArea}
                     </p>
                   )}
                 </div>
@@ -573,7 +571,7 @@ const RegisterComplaint = () => {
                 {/* Street / Locality */}
                 <div>
                   <label className="form-label">
-                    {t('lbl_street_locality', 'Street / Locality')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                    {t('lbl_street_locality', 'Street / Locality')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                   </label>
                   <input
                     type="text"
@@ -582,32 +580,31 @@ const RegisterComplaint = () => {
                     onChange={handleChange}
                     disabled={formData.streetNotListed}
                     placeholder={t('ph_street_locality', 'Enter street, village, town or landmark...')}
-                    className={`form-input disabled:bg-gray-100 disabled:text-gray-400 ${
-                      errors.streetLocality ? 'border-red-500 bg-red-50/20' : ''
-                    }`}
+                    className={`form-input disabled:bg-gray-100 disabled:text-gray-400 ${errors.streetLocality ? 'border-[#DC2626] bg-red-50/20' : ''
+                      }`}
                   />
                   {errors.streetLocality && (
-                    <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                      <AlertCircle size={11} /> {errors.streetLocality}
+                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                      <AlertCircle size={12} /> {errors.streetLocality}
                     </p>
                   )}
                 </div>
 
                 {/* Street Not Listed Checkbox Row */}
-                <div className="flex flex-row items-center justify-between text-xs text-gray-500 gap-1 pt-0.5">
-                  <label className="inline-flex items-center gap-1.5 cursor-pointer select-none">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between text-xs text-gray-500 gap-1.5 sm:gap-2 pt-0.5">
+                  <label className="inline-flex items-center gap-2 cursor-pointer select-none">
                     <input
                       type="checkbox"
                       name="streetNotListed"
                       checked={formData.streetNotListed}
                       onChange={handleChange}
-                      className="w-3.5 h-3.5 rounded border-gray-300 text-[#800000] focus:ring-[#800000] accent-[#800000]"
+                      className="w-4 h-4 rounded border-gray-300 text-[#7A1515] focus:ring-[#7A1515] accent-[#7A1515]"
                     />
-                    <span className="text-gray-700 text-[11px] sm:text-xs font-medium">
+                    <span className="text-gray-700 font-medium text-xs">
                       {t('chk_street_not_listed', 'My street / area is not listed')}
                     </span>
                   </label>
-                  <span className="text-[10px] sm:text-[11px] text-gray-400 font-normal text-right truncate">
+                  <span className="text-[11px] sm:text-xs text-gray-400 font-normal">
                     {t('txt_applicable_all_wards', 'Applicable across all wards & outside areas')}
                   </span>
                 </div>
@@ -621,29 +618,27 @@ const RegisterComplaint = () => {
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-gray-200 my-3.5" />
+              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
 
               {/* SECTION 3: COMPLAINT DETAILS */}
-              <div className="space-y-2.5">
+              <div className="space-y-3.5">
                 <h2 className="section-title">
                   {t('sec_complaint_details', 'COMPLAINT DETAILS')}
                 </h2>
 
-                {/* 2-column inline row for Grievance & Category */}
-                <div className="grid grid-cols-2 gap-2 sm:gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
                   {/* Grievance Type */}
                   <div>
                     <label className="form-label">
-                      {t('lbl_grievance', 'Grievance')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                      {t('lbl_grievance', 'Grievance')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                     </label>
                     <div className="relative">
                       <select
                         name="grievanceType"
                         value={formData.grievanceType}
                         onChange={handleChange}
-                        className={`form-select appearance-none pr-7 cursor-pointer ${
-                          !formData.grievanceType ? 'text-gray-400' : 'text-gray-900'
-                        } ${errors.grievanceType ? 'border-red-500 bg-red-50/20' : ''}`}
+                        className={`form-select appearance-none pr-10 cursor-pointer ${!formData.grievanceType ? 'text-gray-400' : 'text-gray-900'
+                          } ${errors.grievanceType ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                       >
                         <option value="" disabled>
                           {t('ph_select_grievance', 'Select grievance type')}
@@ -654,11 +649,11 @@ const RegisterComplaint = () => {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown size={15} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                      <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
                     {errors.grievanceType && (
-                      <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                        <AlertCircle size={11} /> {errors.grievanceType}
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.grievanceType}
                       </p>
                     )}
                   </div>
@@ -666,19 +661,18 @@ const RegisterComplaint = () => {
                   {/* Category (Filtered dynamically by selected Grievance) */}
                   <div>
                     <label className="form-label">
-                      {t('lbl_category', 'Category')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                      {t('lbl_category', 'Category')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                     </label>
                     <div className="relative">
                       <select
                         name="category"
                         value={formData.category}
                         onChange={handleChange}
-                        className={`form-select appearance-none pr-7 cursor-pointer ${
-                          !formData.category ? 'text-gray-400' : 'text-gray-900'
-                        } ${errors.category ? 'border-red-500 bg-red-50/20' : ''}`}
+                        className={`form-select appearance-none pr-10 cursor-pointer ${!formData.category ? 'text-gray-400' : 'text-gray-900'
+                          } ${errors.category ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                       >
                         <option value="" disabled>
-                          {formData.grievanceType 
+                          {formData.grievanceType
                             ? t('ph_select_category', 'Select category')
                             : t('ph_select_grievance_first', 'Select a grievance type first')}
                         </option>
@@ -688,11 +682,11 @@ const RegisterComplaint = () => {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown size={15} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                      <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
                     </div>
                     {errors.category && (
-                      <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                        <AlertCircle size={11} /> {errors.category}
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.category}
                       </p>
                     )}
                   </div>
@@ -701,7 +695,7 @@ const RegisterComplaint = () => {
                 {/* Subject */}
                 <div>
                   <label className="form-label">
-                    {t('lbl_subject', 'Subject')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                    {t('lbl_subject', 'Subject')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                   </label>
                   <input
                     type="text"
@@ -709,11 +703,11 @@ const RegisterComplaint = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     placeholder={t('ph_subject', 'Brief subject of your complaint')}
-                    className={`form-input ${errors.subject ? 'border-red-500 bg-red-50/20' : ''}`}
+                    className={`form-input ${errors.subject ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                   />
                   {errors.subject && (
-                    <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                      <AlertCircle size={11} /> {errors.subject}
+                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                      <AlertCircle size={12} /> {errors.subject}
                     </p>
                   )}
                 </div>
@@ -721,45 +715,45 @@ const RegisterComplaint = () => {
                 {/* Description */}
                 <div>
                   <label className="form-label">
-                    {t('lbl_description', 'Description')} <span className="text-red-600 font-bold ml-0.5">*</span>
+                    {t('lbl_description', 'Description')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
                   </label>
                   <textarea
                     name="description"
-                    rows={3}
+                    rows={4}
                     value={formData.description}
                     onChange={handleChange}
                     placeholder={t('ph_description', 'Describe your complaint in detail...')}
-                    className={`form-textarea min-h-[90px] h-[90px] ${errors.description ? 'border-red-500 bg-red-50/20' : ''}`}
+                    className={`form-textarea ${errors.description ? 'border-[#DC2626] bg-red-50/20' : ''}`}
                   />
                   {errors.description && (
-                    <p className="mt-0.5 text-[11px] text-red-600 flex items-center gap-1">
-                      <AlertCircle size={11} /> {errors.description}
+                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                      <AlertCircle size={12} /> {errors.description}
                     </p>
                   )}
                 </div>
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-gray-200 my-3.5" />
+              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
 
               {/* SECTION 4: ATTACHMENTS (OPTIONAL) */}
-              <div className="space-y-3">
-                <h2 className="section-title flex items-center gap-1.5">
-                  <span>{t('sec_attachments', 'ATTACHMENTS (OPTIONAL)')}</span>
+              <div className="space-y-4">
+                <h2 className="section-title">
+                  {t('sec_attachments', 'ATTACHMENTS (OPTIONAL)')}
                 </h2>
 
                 {/* Voice Complaint Recorder */}
-                <div>
+                <div className="space-y-2">
                   <label className="form-label">
                     {t('lbl_voice_complaint', 'Voice Complaint (optional - record in your own words)')}
                   </label>
 
-                  <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                  <div className="flex flex-wrap items-center gap-3">
                     {!isRecording ? (
                       <button
                         type="button"
                         onClick={startRecording}
-                        className="btn-solid !px-3.5 !py-2 !h-[38px] !text-xs sm:!text-sm !rounded-md gap-1.5"
+                        className="btn-solid !bg-[#7A1515] hover:!bg-[#600000] !px-4 !py-2 !text-xs sm:!text-sm !rounded-md gap-2"
                       >
                         <Mic size={15} />
                         <span>{t('btn_start_recording', 'Start Recording')}</span>
@@ -768,7 +762,7 @@ const RegisterComplaint = () => {
                       <button
                         type="button"
                         onClick={stopRecording}
-                        className="btn-solid !bg-red-600 hover:!bg-red-700 animate-pulse !px-3.5 !py-2 !h-[38px] !text-xs sm:!text-sm !rounded-md gap-1.5"
+                        className="btn-solid !bg-red-600 hover:!bg-red-700 animate-pulse !px-4 !py-2 !text-xs sm:!text-sm !rounded-md gap-2"
                       >
                         <Square size={13} className="fill-white" />
                         <span>{t('btn_stop_recording', 'Stop Recording')} ({formatDuration(recordingDuration)})</span>
@@ -779,23 +773,23 @@ const RegisterComplaint = () => {
                       <button
                         type="button"
                         onClick={removeAudioRecording}
-                        className="text-xs text-gray-500 hover:text-red-600 flex items-center gap-1 cursor-pointer transition ml-1"
+                        className="text-xs text-gray-500 hover:text-red-600 flex items-center gap-1 cursor-pointer transition"
                       >
-                        <Trash2 size={12} />
+                        <Trash2 size={13} />
                         <span>{t('btn_remove_audio', 'Remove Recording')}</span>
                       </button>
                     )}
                   </div>
 
                   {/* Audio Status & Audio Player */}
-                  <div className="mt-1.5 text-xs text-gray-400">
+                  <div className="text-xs text-gray-400">
                     {isRecording ? (
                       <span className="text-red-600 font-medium inline-flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-red-600 animate-ping"></span>
                         Recording audio... {formatDuration(recordingDuration)}
                       </span>
                     ) : audioUrl ? (
-                      <div className="mt-1.5 p-2.5 bg-red-50/60 border border-red-100 rounded-lg flex items-center gap-2.5 max-w-md">
+                      <div className="mt-2 p-3 bg-red-50/60 border border-red-100 rounded-lg flex items-center gap-3 max-w-md">
                         {audioUrl.startsWith('blob:') && (
                           <audio
                             ref={audioPlayerRef}
@@ -807,28 +801,28 @@ const RegisterComplaint = () => {
                         <button
                           type="button"
                           onClick={toggleAudioPlay}
-                          className="w-7 h-7 rounded-full bg-[#800000] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs hover:bg-[#680000] transition"
+                          className="w-8 h-8 rounded-full bg-[#7A1515] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs hover:bg-[#600000] transition"
                         >
-                          {isPlayingAudio ? <Pause size={13} /> : <Play size={13} className="ml-0.5" />}
+                          {isPlayingAudio ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
                         </button>
                         <div className="flex-1 min-w-0">
                           <p className="text-xs font-semibold text-gray-800 truncate">
                             {t('txt_recording_ready', 'Audio recording ready')}
                           </p>
-                          <p className="text-[10px] text-gray-500">
+                          <p className="text-[11px] text-gray-500">
                             Duration: {formatDuration(recordingDuration || 8)}
                           </p>
                         </div>
-                        <Volume2 size={15} className="text-gray-400 shrink-0" />
+                        <Volume2 size={16} className="text-gray-400 shrink-0" />
                       </div>
                     ) : (
-                      <span className="text-[11px] text-gray-400">{t('txt_no_recording', 'No recording yet.')}</span>
+                      <span>{t('txt_no_recording', 'No recording yet.')}</span>
                     )}
                   </div>
                 </div>
 
                 {/* Attachments Dropzone */}
-                <div>
+                <div className="space-y-2 pt-1">
                   <label className="form-label">
                     {t('lbl_attachments', 'Attachments (photos, video, voice - optional)')}
                   </label>
@@ -847,52 +841,51 @@ const RegisterComplaint = () => {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`dropzone p-4 sm:p-5 text-center flex flex-col items-center justify-center cursor-pointer transition rounded-md ${
-                      isDragOver ? 'drag-active border-[#800000] bg-red-50/20' : ''
-                    }`}
+                    className={`dropzone p-6 sm:p-7 text-center flex flex-col items-center justify-center cursor-pointer transition ${isDragOver ? 'drag-active border-[#7A1515] bg-red-50/20' : ''
+                      }`}
                   >
-                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500 mb-1.5 group-hover:scale-105 transition-transform">
-                      <Paperclip size={16} className="text-gray-600 rotate-45" />
+                    <div className="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-gray-500 mb-2.5">
+                      <Paperclip size={17} className="text-gray-600 rotate-45" />
                     </div>
 
-                    <p className="text-xs text-gray-700 font-medium mb-1.5">
+                    <p className="text-xs sm:text-sm text-gray-700 font-medium mb-2.5">
                       {t('txt_add_media', 'Add photo, video or voice note')}
                     </p>
 
                     <button
                       type="button"
-                      className="btn-outline !text-[11px] !py-1 !px-2.5 !h-7 pointer-events-none"
+                      className="btn-outline !text-xs !py-1.5 !px-3 pointer-events-none"
                     >
-                      <Upload size={12} className="text-[#800000]" />
+                      <Upload size={13} className="text-[#7A1515]" />
                       <span>{t('btn_browse_files', 'Browse Files')}</span>
                     </button>
                   </div>
 
                   {/* Uploaded Files Preview List */}
                   {attachments.length > 0 && (
-                    <div className="mt-2 space-y-1.5">
-                      <p className="text-[11px] text-gray-500 font-medium">
+                    <div className="mt-3 space-y-2">
+                      <p className="text-xs text-gray-500 font-medium">
                         {attachments.length} {t('txt_files_selected', 'file(s) selected')}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         {attachments.map((item, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-md text-xs"
+                            className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs"
                           >
-                            <div className="flex items-center gap-2 min-w-0 pr-1.5">
+                            <div className="flex items-center gap-2 min-w-0 pr-2">
                               {item.previewUrl ? (
                                 <img
                                   src={item.previewUrl}
                                   alt="preview"
-                                  className="w-7 h-7 rounded object-cover shrink-0 border border-gray-200"
+                                  className="w-8 h-8 rounded object-cover shrink-0 border border-gray-200"
                                 />
                               ) : (
-                                <FileText size={16} className="text-gray-400 shrink-0" />
+                                <FileText size={18} className="text-gray-400 shrink-0" />
                               )}
                               <div className="min-w-0">
-                                <p className="font-medium text-[11px] text-gray-800 truncate">{item.name}</p>
-                                <p className="text-[9px] text-gray-400">{item.size} MB</p>
+                                <p className="font-medium text-gray-800 truncate text-[11px]">{item.name}</p>
+                                <p className="text-[10px] text-gray-400">{item.size} MB</p>
                               </div>
                             </div>
                             <button
@@ -901,10 +894,10 @@ const RegisterComplaint = () => {
                                 e.stopPropagation();
                                 removeAttachment(idx);
                               }}
-                              className="text-gray-400 hover:text-red-600 p-0.5 rounded-full hover:bg-white cursor-pointer transition"
+                              className="text-gray-400 hover:text-red-600 p-1 rounded-full hover:bg-white cursor-pointer transition"
                               title="Remove file"
                             >
-                              <X size={13} />
+                              <X size={14} />
                             </button>
                           </div>
                         ))}
@@ -916,7 +909,7 @@ const RegisterComplaint = () => {
 
               {/* Submit Error Banner */}
               {submitError && (
-                <div className="mt-3.5 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2 text-xs text-red-700 animate-in fade-in">
+                <div className="mt-4 p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in">
                   <AlertCircle size={16} className="text-red-600 shrink-0 mt-0.5" />
                   <div>
                     <strong className="font-bold block mb-0.5">Submission Error</strong>
@@ -925,16 +918,16 @@ const RegisterComplaint = () => {
                 </div>
               )}
 
-              {/* Submit Button */}
-              <div className="pt-4">
+              {/* Submit Action */}
+              <div className="pt-5 sm:pt-6">
                 <button
                   type="submit"
                   disabled={!isFormValid || isSubmitting}
-                  className="btn-solid w-full !py-2.5 !h-11 !text-sm sm:!text-base shadow-xs hover:shadow-md transition-all font-bold"
+                  className="btn-submit-cta"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 size={16} className="animate-spin text-white mr-2" />
+                      <Loader2 size={18} className="animate-spin text-white mr-2" />
                       <span>{t('btn_submitting', 'Submitting Complaint...')}</span>
                     </>
                   ) : (
@@ -954,7 +947,7 @@ const RegisterComplaint = () => {
       {submittedData && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border border-gray-100 text-center relative max-h-[90vh] overflow-y-auto">
-            
+
             {/* Close Button */}
             <button
               onClick={handleResetForm}
