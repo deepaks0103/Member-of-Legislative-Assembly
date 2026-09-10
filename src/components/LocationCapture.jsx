@@ -248,34 +248,34 @@ const LocationCapture = ({ value, onChange, constituencyName = 'Kallakurichi' })
   };
 
   return (
-    <div className="pt-2 space-y-3">
+    <div className="pt-1 space-y-1.5">
       {/* Title */}
-      <h3 className="form-label">
+      <h3 className="form-label !mb-0.5">
         {t('lbl_your_location', 'Your Location (optional GPS tag)')}
       </h3>
 
       {/* Helper text above button */}
-      <p className={`text-[11px] sm:text-xs leading-relaxed transition-colors ${status === 'success' ? 'text-emerald-700 font-medium' : 'text-gray-500'
+      <p className={`text-[11px] leading-relaxed transition-colors ${status === 'success' ? 'text-emerald-700 font-medium' : 'text-gray-500'
         }`}>
         {getHelperTextAbove()}
       </p>
 
       {/* Button Row */}
-      <div className="flex flex-wrap items-center gap-3">
+      <div className="flex flex-wrap items-center gap-2 pt-0.5">
         <button
           type="button"
           onClick={handleDetectLocation}
           disabled={status === 'loading'}
-          className="btn-outline"
+          className="btn-outline !h-[36px] !py-1 !px-3 !text-xs rounded-md"
         >
           {status === 'loading' ? (
             <>
-              <Loader2 size={15} className="animate-spin text-[#800000]" />
+              <Loader2 size={14} className="animate-spin text-[#800000]" />
               <span>{t('btn_detecting_location', 'Detecting Location...')}</span>
             </>
           ) : (
             <>
-              <MapPin size={15} className="text-[#800000]" />
+              <MapPin size={14} className="text-[#800000]" />
               <span>{t('btn_use_location', 'Use My Location')}</span>
             </>
           )}
@@ -285,9 +285,9 @@ const LocationCapture = ({ value, onChange, constituencyName = 'Kallakurichi' })
           <button
             type="button"
             onClick={handleClearLocation}
-            className="inline-flex items-center gap-1 text-xs text-gray-500 hover:text-red-600 transition cursor-pointer underline"
+            className="inline-flex items-center gap-1 text-[11px] text-gray-500 hover:text-red-600 transition cursor-pointer underline"
           >
-            <X size={13} />
+            <X size={12} />
             <span>{t('btn_remove_location', 'Remove GPS')}</span>
           </button>
         )}
@@ -295,7 +295,7 @@ const LocationCapture = ({ value, onChange, constituencyName = 'Kallakurichi' })
 
       {/* Helper text below button for Idle, Loading, or Error states */}
       {status === 'idle' && (
-        <p className="text-xs text-gray-400">
+        <p className="text-[11px] text-gray-400">
           {t('txt_location_not_shared', 'Location not shared yet.')}
         </p>
       )}
