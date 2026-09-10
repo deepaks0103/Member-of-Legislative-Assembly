@@ -31,10 +31,10 @@ const ContactOffice = () => {
   }, []);
 
   // District Collector Office Coordinates & Map Embed URL
-  const officeLat = 11.7475;
-  const officeLng = 79.0294;
-  const mapEmbedUrl = `https://maps.google.com/maps?q=District+Collectorate+Kallakurichi&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=District+Collectorate+Kallakurichi`;
+  const officeLat = 11.7387;
+  const officeLng = 78.9609;
+  const mapEmbedUrl = `https://maps.google.com/maps?q=District+Collector+Office,+Kachirapalayam+Road,+Kallakurichi,+Tamil+Nadu+606202&t=&z=16&ie=UTF8&iwloc=&output=embed`;
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=District+Collector+Office,+Kachirapalayam+Road,+Kallakurichi`;
 
   // Social Links config - only renders items with URLs
   const socialLinks = [
