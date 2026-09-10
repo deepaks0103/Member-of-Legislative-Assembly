@@ -367,9 +367,16 @@ const RegisterComplaint = () => {
 
     setIsSubmitting(true);
 
-    // Generate client-side mock Complaint ID (e.g., KLK-2026-XXXXX)
-    const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const refId = `KLK-2026-${randomNum}`;
+    const now = new Date();
+    const formattedDate = now.toLocaleDateString('en-IN', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    }) + ', ' + now.toLocaleTimeString('en-IN', {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true
+    });
 
     const complaintRecord = {
       id: refId,
@@ -383,9 +390,25 @@ const RegisterComplaint = () => {
       } : null,
       hasAudio: Boolean(audioBlob || audioUrl),
       attachmentCount: attachments.length,
+      attachments: attachments.map(a => ({ name: a.name, size: a.size + ' MB', type: a.type, url: a.previewUrl })),
       status: 'Submitted',
-      submittedAt: new Date().toISOString(),
+      submittedAt: now.toISOString(),
+      timeline: [
+        { step: 1, key: 'submitted', date: formattedDate, done: true },
+        { step: 2, key: 'under_review', date: null, done: false },
+        { step: 3, key: 'assigned', date: null, done: false },
+        { step: 4, key: 'action_taken', date: null, done: false },
+        { step: 5, key: 'resolved', date: null, done: false },
+      ],
+      remarks: []
     };
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('cdo_registered_complaints') || '[]');
+      localStorage.setItem('cdo_registered_complaints', JSON.stringify([complaintRecord, ...existing]));
+    } catch (err) {
+      console.warn('Could not save complaint to localStorage:', err);
+    }
 
     setTimeout(() => {
       setIsSubmitting(false);

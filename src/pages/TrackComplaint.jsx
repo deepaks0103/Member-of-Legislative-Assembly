@@ -33,282 +33,19 @@ import MobileNav from '../components/MobileNav';
 import { useLanguage } from '../context/LanguageContext';
 import { grievanceCategoriesData } from '../data/grievanceCategories';
 
-// Predefined Demo Grievances covering all 5 stages + Queued + Rejected states
-const INITIAL_MOCK_COMPLAINTS = [
-  {
-    id: 'KLK-2026-10001',
-    mobileNumber: '9876543210',
-    fullName: 'S. Karthi',
-    address: 'No. 45, Salem Main Road, Kallakurichi',
-    wardArea: 'w8',
-    streetLocality: 'Ward 8 - Salem Main Road near Bus Stop',
-    grievanceType: 'water',
-    category: 'broken_pipeline',
-    subject: 'Major drinking water pipeline burst on main junction',
-    description: 'The drinking water pipeline cracked near the tea stall junction causing severe water wastage and low pressure for 40+ houses in the lane for 3 days.',
-    gpsLocation: {
-      lat: 11.7384,
-      lng: 78.9639,
-      boundaryStatus: 'Inside',
-      formattedAddress: 'Salem Main Rd, Kallakurichi, Tamil Nadu 606202'
-    },
-    status: 'Resolved',
-    submittedAt: '2026-03-01T09:30:00.000Z',
-    hasAudio: true,
-    audioDuration: '00:18',
-    attachments: [
-      { name: 'pipeline_leak_photo1.jpg', size: '1.8 MB', type: 'image/jpeg', url: 'https://images.unsplash.com/photo-1584467735871-8e85353a8413?w=600&auto=format&fit=crop&q=80' }
-    ],
-    timeline: [
-      { step: 1, key: 'submitted', date: '01 Mar 2026, 09:30 AM', done: true },
-      { step: 2, key: 'under_review', date: '01 Mar 2026, 11:15 AM', done: true },
-      { step: 3, key: 'assigned', date: '01 Mar 2026, 02:40 PM', done: true },
-      { step: 4, key: 'action_taken', date: '02 Mar 2026, 10:00 AM', done: true },
-      { step: 5, key: 'resolved', date: '02 Mar 2026, 05:30 PM', done: true },
-    ],
-    department: {
-      en: 'TWAD Board / Municipal Water Supply Division',
-      ta: 'தமிழ்நாடு குடிநீர் வடிகால் வாரியம் / நகராட்சி குடிநீர் பிரிவு'
-    },
-    officer: {
-      name: 'Er. R. Soundararajan',
-      designation: {
-        en: 'Assistant Executive Engineer (Water Supply)',
-        ta: 'உதவி செயற்பொறியாளர் (குடிநீர் வழங்கல்)'
-      }
-    },
-    remarks: [
-      {
-        date: '02 Mar 2026, 05:30 PM',
-        stage: 'Resolved',
-        en: '150mm damaged PVC conduit replaced with heavy-duty cast iron junction. Water supply restored and verified with ward residents.',
-        ta: 'சேதமடைந்த 150 மிமீ குழாய் மாற்றப்பட்டு புதிய வார்ப்பிரும்பு குழாய் பொருத்தப்பட்டது. குடிநீர் விநியோகம் சீரமைக்கப்பட்டு பொதுமக்கள் முன்னிலையில் சரிபார்க்கப்பட்டது.'
-      },
-      {
-        date: '02 Mar 2026, 10:00 AM',
-        stage: 'Action Taken',
-        en: 'Repair team deployed with excavator. Old cracked section excavated and replacement pipe aligned.',
-        ta: 'பழுதுநீக்கும் குழுவினர் பொக்லைன் இயந்திரத்துடன் களத்திற்கு அனுப்பப்பட்டு உடைந்த பகுதி வெட்டி அகற்றப்பட்டது.'
-      },
-      {
-        date: '01 Mar 2026, 02:40 PM',
-        stage: 'Assigned',
-        en: 'Assigned to Ward 8 field inspection team for immediate pipeline replacement.',
-        ta: 'வார்டு 8 கள ஆய்வு குழுவிற்கு உடனடியாக குழாய் மாற்ற உத்தரவிடப்பட்டு ஒதுக்கப்பட்டது.'
-      }
-    ]
-  },
-  {
-    id: 'KLK-2026-10002',
-    mobileNumber: '9876543210',
-    fullName: 'M. Anandhi',
-    address: '12B, Thiyagadurgam Road, Ward 7',
-    wardArea: 'w7',
-    streetLocality: 'Ward 7 - Thiyagadurgam Road',
-    grievanceType: 'roads',
-    category: 'severe_potholes',
-    subject: 'Dangerous potholes causing two-wheeler accidents',
-    description: 'Continuous heavy vehicle transit created huge potholes near the school turn. Two motorists fell down yesterday night during rain.',
-    gpsLocation: {
-      lat: 11.7321,
-      lng: 78.9692,
-      boundaryStatus: 'Inside',
-      formattedAddress: 'Thiyagadurgam Rd, Kallakurichi'
-    },
-    status: 'Action Taken',
-    submittedAt: '2026-03-04T14:10:00.000Z',
-    hasAudio: false,
-    attachments: [
-      { name: 'pothole_site_view.jpg', size: '2.4 MB', type: 'image/jpeg', url: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?w=600&auto=format&fit=crop&q=80' }
-    ],
-    timeline: [
-      { step: 1, key: 'submitted', date: '04 Mar 2026, 02:10 PM', done: true },
-      { step: 2, key: 'under_review', date: '04 Mar 2026, 04:30 PM', done: true },
-      { step: 3, key: 'assigned', date: '05 Mar 2026, 09:15 AM', done: true },
-      { step: 4, key: 'action_taken', date: '06 Mar 2026, 11:00 AM', done: true },
-      { step: 5, key: 'resolved', date: null, done: false },
-    ],
-    department: {
-      en: 'Highways & Municipal Works Department',
-      ta: 'நெடுஞ்சாலை & நகராட்சி சாலைப் பணிகள் துறை'
-    },
-    officer: {
-      name: 'Thiru. M. Selvam',
-      designation: {
-        en: 'Assistant Engineer (Highways)',
-        ta: 'உதவி பொறியாளர் (நெடுஞ்சாலைத்துறை)'
-      }
-    },
-    remarks: [
-      {
-        date: '06 Mar 2026, 11:00 AM',
-        stage: 'Action Taken',
-        en: 'Wet-mix macadam patching completed on 6 major crater points. Bitumen hot-mix top layer scheduled for tonight to avoid traffic disruption.',
-        ta: '6 முக்கிய குண்டு குழிகளில் வெட்-மிக்ஸ் முதற்கட்ட சீரமைப்பு முடிந்தது. போக்குவரத்து நெரிசலை தவிர்க்க இன்று இரவு தார் கலவை மேல் பூச்சு போடப்பட உள்ளது.'
-      },
-      {
-        date: '05 Mar 2026, 09:15 AM',
-        stage: 'Assigned',
-        en: 'Field estimator inspected site. Material requisition sanctioned for 250 sq. meters patch work.',
-        ta: 'கள ஆய்வாளர் இடத்தை பார்வையிட்டு 250 சதுர மீட்டர் தார் சீரமைப்புக்கு ஒப்புதல் வழங்கினார்.'
-      }
-    ]
-  },
-  {
-    id: 'KLK-2026-10003',
-    mobileNumber: '9443211223',
-    fullName: 'P. Muthuvel',
-    address: 'Plot 18, Anna Nagar 3rd Cross',
-    wardArea: 'w5',
-    streetLocality: 'Ward 5 - Anna Nagar',
-    grievanceType: 'electricity',
-    category: 'street_light_off',
-    subject: '4 Street lights non-functional for past 2 weeks',
-    description: 'Complete dark stretch on 3rd cross Anna Nagar. Women and school children facing difficulty and safety concerns during evening hours.',
-    gpsLocation: null,
-    status: 'Assigned',
-    submittedAt: '2026-03-07T10:00:00.000Z',
-    hasAudio: true,
-    audioDuration: '00:12',
-    attachments: [],
-    timeline: [
-      { step: 1, key: 'submitted', date: '07 Mar 2026, 10:00 AM', done: true },
-      { step: 2, key: 'under_review', date: '07 Mar 2026, 01:20 PM', done: true },
-      { step: 3, key: 'assigned', date: '08 Mar 2026, 09:00 AM', done: true },
-      { step: 4, key: 'action_taken', date: null, done: false },
-      { step: 5, key: 'resolved', date: null, done: false },
-    ],
-    department: {
-      en: 'TANGEDCO / Municipal Electrical Wing',
-      ta: 'தமிழ்நாடு மின் உற்பத்தி மற்றும் பகிர்மான கழகம் / நகராட்சி மின் பிரிவு'
-    },
-    officer: {
-      name: 'Thiru. K. Chandran',
-      designation: {
-        en: 'Junior Engineer (Distribution)',
-        ta: 'இளநிலை பொறியாளர் (மின் விநியோகம்)'
-      }
-    },
-    remarks: [
-      {
-        date: '08 Mar 2026, 09:00 AM',
-        stage: 'Assigned',
-        en: 'Assigned to Ward Electrical maintenance team. LED bulb replacement and fuse circuit checking scheduled for today afternoon.',
-        ta: 'வார்டு மின் பராமரிப்பு குழுவிற்கு பணி ஒதுக்கீடு செய்யப்பட்டுள்ளது. இன்று மதியம் புதிய எல்இடி விளக்குகள் பொருத்தப்படும்.'
-      }
-    ]
-  },
-  {
-    id: 'KLK-2026-10004',
-    mobileNumber: '9123456780',
-    fullName: 'T. Vasanth',
-    address: 'Near Government High School, Raja Desingh Nagar',
-    wardArea: 'w1',
-    streetLocality: 'Ward 1 - Raja Desingh Nagar',
-    grievanceType: 'drainage',
-    category: 'blocked_drain',
-    subject: 'Drainage blockage overflowing near school entrance',
-    description: 'Sewage drain is choked with plastic and silt causing overflow onto the pedestrian path right opposite to the primary school gate.',
-    gpsLocation: null,
-    status: 'Under Review',
-    submittedAt: '2026-03-08T16:45:00.000Z',
-    hasAudio: false,
-    attachments: [],
-    timeline: [
-      { step: 1, key: 'submitted', date: '08 Mar 2026, 04:45 PM', done: true },
-      { step: 2, key: 'under_review', date: '09 Mar 2026, 09:30 AM', done: true },
-      { step: 3, key: 'assigned', date: null, done: false },
-      { step: 4, key: 'action_taken', date: null, done: false },
-      { step: 5, key: 'resolved', date: null, done: false },
-    ],
-    department: {
-      en: 'Public Health & Sanitation Department',
-      ta: 'பொது சுகாதாரம் மற்றும் துப்புரவு துறை'
-    },
-    officer: {
-      name: 'Sanitary Inspector Desk',
-      designation: {
-        en: 'Kallakurichi Municipal Health Section',
-        ta: 'கள்ளக்குறிச்சி நகராட்சி சுகாதார பிரிவு'
-      }
-    },
-    remarks: [
-      {
-        date: '09 Mar 2026, 09:30 AM',
-        stage: 'Under Review',
-        en: 'Complaint verified and prioritized as school zone priority. Desilting vehicle booking in progress.',
-        ta: 'பள்ளி வளாகப் பகுதி என்பதால் முன்னுரிமை அளிக்கப்பட்டு சரிபார்க்கப்பட்டது. தூர்வாரும் வாகனம் ஒதுக்கீடு செய்யப்படுகிறது.'
-      }
-    ]
-  },
-  {
-    id: 'KLK-2026-10005',
-    mobileNumber: '9988776655',
-    fullName: 'K. Rajendran',
-    address: 'Chinnasalem Town Main Market Road',
-    wardArea: 'chinnasalem',
-    streetLocality: 'Chinnasalem Town Panchayat',
-    grievanceType: 'other',
-    category: 'stray_animals',
-    subject: 'Stray cattle blocking market road traffic',
-    description: 'Unattended cattle roaming freely in weekly market area causing severe vehicle blocks and minor accidents.',
-    gpsLocation: null,
-    status: 'Submitted',
-    submittedAt: '2026-03-09T08:15:00.000Z',
-    hasAudio: false,
-    attachments: [],
-    timeline: [
-      { step: 1, key: 'submitted', date: '09 Mar 2026, 08:15 AM', done: true },
-      { step: 2, key: 'under_review', date: null, done: false },
-      { step: 3, key: 'assigned', date: null, done: false },
-      { step: 4, key: 'action_taken', date: null, done: false },
-      { step: 5, key: 'resolved', date: null, done: false },
-    ],
-    department: null,
-    officer: null,
-    remarks: []
-  },
-  {
-    id: 'KLK-2026-10006',
-    mobileNumber: '9840198401',
-    fullName: 'D. Suresh',
-    address: 'Private layout interior plot',
-    wardArea: 'other_outside',
-    streetLocality: 'Outside Constituency Limit',
-    grievanceType: 'roads',
-    category: 'damaged_surface',
-    subject: 'Paving stone request for private individual compound pathway',
-    description: 'Requesting government fund for private driveway paving inside private owned compound gate.',
-    gpsLocation: null,
-    status: 'Rejected',
-    submittedAt: '2026-02-28T11:00:00.000Z',
-    hasAudio: false,
-    attachments: [],
-    timeline: [
-      { step: 1, key: 'submitted', date: '28 Feb 2026, 11:00 AM', done: true },
-      { step: 2, key: 'under_review', date: '28 Feb 2026, 03:30 PM', done: true },
-    ],
-    department: {
-      en: 'Constituency Digital Office Scrutiny Cell',
-      ta: 'தொகுதி டிஜிட்டல் அலுவலக ஆய்வு பிரிவு'
-    },
-    officer: {
-      name: 'Grievance Scrutiny Officer',
-      designation: {
-        en: 'Public Grievance Redressal Desk',
-        ta: 'பொது மக்கள் குறைதீர் பிரிவு'
-      }
-    },
-    remarks: [
-      {
-        date: '28 Feb 2026, 03:30 PM',
-        stage: 'Rejected',
-        en: 'Government funds and MLA local area development funds are strictly reserved for public roads and community infrastructure. Private individual property works cannot be entertained.',
-        ta: 'சட்டமன்ற உறுப்பினர் தொகுதி மேம்பாட்டு நிதி பொது உள்கட்டமைப்பு மற்றும் பொதுச் சாலைகளுக்கு மட்டுமே பயன்படுத்த முடியும். தனிநபர் தனியார் வளாகப் பணிகளுக்கு நிதி ஒதுக்கீடு செய்ய இயலாது.'
-      }
-    ]
+// Retrieve grievances registered in the current session / browser
+const getRegisteredComplaints = () => {
+  try {
+    const raw = localStorage.getItem('cdo_registered_complaints');
+    if (raw) {
+      const list = JSON.parse(raw);
+      if (Array.isArray(list)) return list;
+    }
+  } catch (e) {
+    console.warn('Error reading cdo_registered_complaints from localStorage', e);
   }
-];
+  return [];
+};
 
 const TrackComplaint = () => {
   const { language, t } = useLanguage();
@@ -342,7 +79,7 @@ const TrackComplaint = () => {
     }
   }, [searchParams]);
 
-  // Search By Complaint ID - Pure Frontend Local Mock
+  // Search By Complaint ID - Searches actual registered complaints
   const performSearchById = (idToSearch) => {
     const cleanId = (idToSearch || complaintIdInput).trim().toUpperCase();
     setErrorMessage('');
@@ -355,8 +92,9 @@ const TrackComplaint = () => {
     setIsSearching(true);
 
     setTimeout(() => {
-      const found = INITIAL_MOCK_COMPLAINTS.find(
-        (c) => c.id.toUpperCase() === cleanId || c.id.replace(/-/g, '').toUpperCase() === cleanId.replace(/-/g, '')
+      const storedComplaints = getRegisteredComplaints();
+      const found = storedComplaints.find(
+        (c) => c.id && (c.id.toUpperCase() === cleanId || c.id.replace(/-/g, '').toUpperCase() === cleanId.replace(/-/g, ''))
       );
 
       if (found) {
@@ -371,7 +109,7 @@ const TrackComplaint = () => {
     }, 400);
   };
 
-  // Search By Mobile Number - Pure Frontend Local Mock
+  // Search By Mobile Number - Searches actual registered complaints
   const performSearchByMobile = (mobileToSearch) => {
     const rawMobile = mobileToSearch !== undefined ? mobileToSearch : mobileInput;
     const cleanedMobile = (rawMobile || '').replace(/\D/g, '');
@@ -387,7 +125,8 @@ const TrackComplaint = () => {
     setMobileResults([]);
 
     setTimeout(() => {
-      const matches = INITIAL_MOCK_COMPLAINTS.filter((c) => {
+      const storedComplaints = getRegisteredComplaints();
+      const matches = storedComplaints.filter((c) => {
         const cMobile = (c.mobileNumber || '').replace(/\D/g, '');
         return cMobile === cleanedMobile;
       });
