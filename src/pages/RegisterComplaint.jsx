@@ -450,21 +450,21 @@ const RegisterComplaint = () => {
     <div className="flex flex-col min-h-screen bg-[#F8F9FA]">
       <Navbar />
 
-      <main className="flex-grow py-5 sm:py-10 px-3 sm:px-6 lg:px-8">
-        <div className="max-w-[430px] sm:max-w-xl mx-auto">
+      <main className="flex-grow py-8 sm:py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto w-full">
 
-          {/* Main Card Container */}
-          <div className="form-card p-4 sm:p-7 md:p-8 transition-all">
+          {/* Main White Card Container */}
+          <div className="form-card p-6 sm:p-10 md:p-12 transition-all">
 
             <form onSubmit={handleSubmit} noValidate>
 
               {/* SECTION 1: YOUR DETAILS */}
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 <h2 className="section-title">
                   {t('sec_your_details', 'YOUR DETAILS')}
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Full Name */}
                   <div>
                     <label className="form-label">
@@ -529,65 +529,67 @@ const RegisterComplaint = () => {
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
+              <hr className="border-t border-[#E5E7EB] my-6 sm:my-8" />
 
               {/* SECTION 2: LOCATION */}
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 <h2 className="section-title">
                   {t('sec_location', 'LOCATION')}
                 </h2>
 
-                {/* Ward / Constituency Area */}
-                <div>
-                  <label className="form-label">
-                    {t('lbl_ward_area', 'Ward / Constituency Area')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
-                  </label>
-                  <div className="relative">
-                    <select
-                      name="wardArea"
-                      value={formData.wardArea}
-                      onChange={handleChange}
-                      className={`form-select appearance-none pr-10 cursor-pointer ${!formData.wardArea ? 'text-gray-400' : 'text-gray-900'
-                        } ${errors.wardArea ? 'border-[#DC2626] bg-red-50/20' : ''}`}
-                    >
-                      <option value="" disabled>
-                        {t('ph_select_ward', 'Select ward or area')}
-                      </option>
-                      {wardsList.map((ward) => (
-                        <option key={ward.id} value={ward.id} className="text-gray-900">
-                          {language === 'ta' ? ward.ta : ward.en}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                  {/* Ward / Constituency Area */}
+                  <div>
+                    <label className="form-label">
+                      {t('lbl_ward_area', 'Ward / Constituency Area')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
+                    </label>
+                    <div className="relative">
+                      <select
+                        name="wardArea"
+                        value={formData.wardArea}
+                        onChange={handleChange}
+                        className={`form-select appearance-none pr-10 cursor-pointer ${!formData.wardArea ? 'text-gray-400' : 'text-gray-900'
+                          } ${errors.wardArea ? 'border-[#DC2626] bg-red-50/20' : ''}`}
+                      >
+                        <option value="" disabled>
+                          {t('ph_select_ward', 'Select ward or area')}
                         </option>
-                      ))}
-                    </select>
-                    <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                        {wardsList.map((ward) => (
+                          <option key={ward.id} value={ward.id} className="text-gray-900">
+                            {language === 'ta' ? ward.ta : ward.en}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown size={18} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none" />
+                    </div>
+                    {errors.wardArea && (
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.wardArea}
+                      </p>
+                    )}
                   </div>
-                  {errors.wardArea && (
-                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
-                      <AlertCircle size={12} /> {errors.wardArea}
-                    </p>
-                  )}
-                </div>
 
-                {/* Street / Locality */}
-                <div>
-                  <label className="form-label">
-                    {t('lbl_street_locality', 'Street / Locality')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    name="streetLocality"
-                    value={formData.streetLocality}
-                    onChange={handleChange}
-                    disabled={formData.streetNotListed}
-                    placeholder={t('ph_street_locality', 'Enter street, village, town or landmark...')}
-                    className={`form-input disabled:bg-gray-100 disabled:text-gray-400 ${errors.streetLocality ? 'border-[#DC2626] bg-red-50/20' : ''
-                      }`}
-                  />
-                  {errors.streetLocality && (
-                    <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
-                      <AlertCircle size={12} /> {errors.streetLocality}
-                    </p>
-                  )}
+                  {/* Street / Locality */}
+                  <div>
+                    <label className="form-label">
+                      {t('lbl_street_locality', 'Street / Locality')} <span className="text-[#DC2626] font-bold ml-0.5">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      name="streetLocality"
+                      value={formData.streetLocality}
+                      onChange={handleChange}
+                      disabled={formData.streetNotListed}
+                      placeholder={t('ph_street_locality', 'Enter street, village, town or landmark...')}
+                      className={`form-input disabled:bg-gray-100 disabled:text-gray-400 ${errors.streetLocality ? 'border-[#DC2626] bg-red-50/20' : ''
+                        }`}
+                    />
+                    {errors.streetLocality && (
+                      <p className="mt-1 text-xs text-[#DC2626] flex items-center gap-1">
+                        <AlertCircle size={12} /> {errors.streetLocality}
+                      </p>
+                    )}
+                  </div>
                 </div>
 
                 {/* Street Not Listed Checkbox Row */}
@@ -598,13 +600,13 @@ const RegisterComplaint = () => {
                       name="streetNotListed"
                       checked={formData.streetNotListed}
                       onChange={handleChange}
-                      className="w-4 h-4 rounded border-gray-300 text-[#7A1515] focus:ring-[#7A1515] accent-[#7A1515]"
+                      className="w-4 h-4 rounded border-gray-300 text-[#800000] focus:ring-[#800000] accent-[#800000]"
                     />
-                    <span className="text-gray-700 font-medium text-xs">
+                    <span className="text-gray-700 font-medium text-xs sm:text-sm">
                       {t('chk_street_not_listed', 'My street / area is not listed')}
                     </span>
                   </label>
-                  <span className="text-[11px] sm:text-xs text-gray-400 font-normal">
+                  <span className="text-xs text-gray-500 font-normal">
                     {t('txt_applicable_all_wards', 'Applicable across all wards & outside areas')}
                   </span>
                 </div>
@@ -618,15 +620,15 @@ const RegisterComplaint = () => {
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
+              <hr className="border-t border-[#E5E7EB] my-6 sm:my-8" />
 
               {/* SECTION 3: COMPLAINT DETAILS */}
-              <div className="space-y-3.5">
+              <div className="space-y-4">
                 <h2 className="section-title">
                   {t('sec_complaint_details', 'COMPLAINT DETAILS')}
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-3.5">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
                   {/* Grievance Type */}
                   <div>
                     <label className="form-label">
@@ -734,10 +736,10 @@ const RegisterComplaint = () => {
               </div>
 
               {/* 1px Subtle Section Divider */}
-              <hr className="border-t border-[#E5E7EB] my-4 sm:my-5" />
+              <hr className="border-t border-[#E5E7EB] my-6 sm:my-8" />
 
               {/* SECTION 4: ATTACHMENTS (OPTIONAL) */}
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <h2 className="section-title">
                   {t('sec_attachments', 'ATTACHMENTS (OPTIONAL)')}
                 </h2>
@@ -753,7 +755,7 @@ const RegisterComplaint = () => {
                       <button
                         type="button"
                         onClick={startRecording}
-                        className="btn-solid !bg-[#7A1515] hover:!bg-[#600000] !px-4 !py-2 !text-xs sm:!text-sm !rounded-md gap-2"
+                        className="btn-solid !bg-[#800000] hover:!bg-[#680000] !px-4 !py-2 !text-xs sm:!text-sm !rounded-md gap-2"
                       >
                         <Mic size={15} />
                         <span>{t('btn_start_recording', 'Start Recording')}</span>
@@ -801,7 +803,7 @@ const RegisterComplaint = () => {
                         <button
                           type="button"
                           onClick={toggleAudioPlay}
-                          className="w-8 h-8 rounded-full bg-[#7A1515] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs hover:bg-[#600000] transition"
+                          className="w-8 h-8 rounded-full bg-[#800000] text-white flex items-center justify-center shrink-0 cursor-pointer shadow-xs hover:bg-[#680000] transition"
                         >
                           {isPlayingAudio ? <Pause size={14} /> : <Play size={14} className="ml-0.5" />}
                         </button>
@@ -841,22 +843,26 @@ const RegisterComplaint = () => {
                     onDragLeave={handleDragLeave}
                     onDrop={handleDrop}
                     onClick={() => fileInputRef.current?.click()}
-                    className={`dropzone p-6 sm:p-7 text-center flex flex-col items-center justify-center cursor-pointer transition ${isDragOver ? 'drag-active border-[#7A1515] bg-red-50/20' : ''
+                    className={`dropzone p-7 sm:p-9 text-center flex flex-col items-center justify-center cursor-pointer transition ${isDragOver ? 'drag-active border-[#800000] bg-red-50/20' : ''
                       }`}
                   >
-                    <div className="w-9 h-9 rounded-full bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-gray-500 mb-2.5">
-                      <Paperclip size={17} className="text-gray-600 rotate-45" />
+                    <div className="w-10 h-10 rounded-full bg-white border border-gray-200 shadow-2xs flex items-center justify-center text-gray-500 mb-2.5">
+                      <Paperclip size={18} className="text-gray-600 rotate-45" />
                     </div>
 
-                    <p className="text-xs sm:text-sm text-gray-700 font-medium mb-2.5">
-                      {t('txt_add_media', 'Add photo, video or voice note')}
+                    <p className="text-sm font-semibold text-gray-800 mb-1">
+                      {t('txt_dropzone_title', 'Drag and drop files here, or browse')}
+                    </p>
+
+                    <p className="text-xs text-gray-500 mb-3">
+                      {t('txt_dropzone_sub', 'Supports images, documents up to 10MB')}
                     </p>
 
                     <button
                       type="button"
-                      className="btn-outline !text-xs !py-1.5 !px-3 pointer-events-none"
+                      className="btn-outline !text-xs !py-1.5 !px-3.5 pointer-events-none"
                     >
-                      <Upload size={13} className="text-[#7A1515]" />
+                      <Upload size={13} className="text-[#800000]" />
                       <span>{t('btn_browse_files', 'Browse Files')}</span>
                     </button>
                   </div>
@@ -867,11 +873,11 @@ const RegisterComplaint = () => {
                       <p className="text-xs text-gray-500 font-medium">
                         {attachments.length} {t('txt_files_selected', 'file(s) selected')}
                       </p>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
                         {attachments.map((item, idx) => (
                           <div
                             key={idx}
-                            className="flex items-center justify-between p-2 bg-gray-50 border border-gray-200 rounded-lg text-xs"
+                            className="flex items-center justify-between p-2.5 bg-gray-50 border border-gray-200 rounded-lg text-xs"
                           >
                             <div className="flex items-center gap-2 min-w-0 pr-2">
                               {item.previewUrl ? (
@@ -909,7 +915,7 @@ const RegisterComplaint = () => {
 
               {/* Submit Error Banner */}
               {submitError && (
-                <div className="mt-4 p-3.5 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in">
+                <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-start gap-2.5 text-xs text-red-700 animate-in fade-in">
                   <AlertCircle size={16} className="text-red-600 shrink-0 mt-0.5" />
                   <div>
                     <strong className="font-bold block mb-0.5">Submission Error</strong>
@@ -919,11 +925,11 @@ const RegisterComplaint = () => {
               )}
 
               {/* Submit Action */}
-              <div className="pt-5 sm:pt-6">
+              <div className="pt-6 sm:pt-8">
                 <button
                   type="submit"
                   disabled={!isFormValid || isSubmitting}
-                  className="btn-submit-cta"
+                  className="btn-submit-cta !rounded-[6px] !bg-[#800000] hover:!bg-[#680000]"
                 >
                   {isSubmitting ? (
                     <>
