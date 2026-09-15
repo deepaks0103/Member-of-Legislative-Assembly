@@ -15,7 +15,12 @@ import {
   AlertCircle,
   X,
   MessageSquare,
-  Users
+  Users,
+  Copy,
+  Check,
+  ExternalLink,
+  HeartPulse,
+  Flame
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
@@ -155,6 +160,8 @@ const FAQ = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [expandedId, setExpandedId] = useState('faq-1');
+  const [isHelplineModalOpen, setIsHelplineModalOpen] = useState(false);
+  const [copiedKey, setCopiedKey] = useState('');
 
   // Scroll to top on mount
   useEffect(() => {
@@ -186,6 +193,19 @@ const FAQ = () => {
 
   const toggleAccordion = (id) => {
     setExpandedId((prev) => (prev === id ? null : id));
+  };
+
+  const handleCopy = (text, key) => {
+    if (text) {
+      navigator.clipboard.writeText(text);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(''), 2500);
+    }
+  };
+
+  const handleCallHelplineClick = (e) => {
+    e.preventDefault();
+    setIsHelplineModalOpen(true);
   };
 
   return (
@@ -404,17 +424,177 @@ const FAQ = () => {
             >
               {t('faq_btn_contact_office', 'Contact Office')}
             </Link>
-            <a
-              href="tel:+919876543210"
-              className="px-5 py-2.5 bg-[#FFCC00] text-[#800000] hover:bg-yellow-400 text-xs sm:text-sm font-bold rounded-xl transition-colors shadow-xs flex items-center gap-1.5"
+            
+            {/* Interactive Call Helpline Button */}
+            <button
+              type="button"
+              onClick={handleCallHelplineClick}
+              className="px-5 py-2.5 bg-[#FFCC00] text-[#800000] hover:bg-yellow-400 text-xs sm:text-sm font-bold rounded-xl transition-all shadow-xs flex items-center gap-2 cursor-pointer active:scale-95"
             >
-              <PhoneCall size={15} />
+              <PhoneCall size={16} />
               <span>{t('faq_btn_call_helpline', 'Call Helpline')}</span>
-            </a>
+            </button>
           </div>
         </div>
 
       </main>
+
+      {/* HELPLINE MODAL POPUP */}
+      {isHelplineModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 sm:p-7 shadow-2xl border border-gray-100 relative max-h-[90vh] overflow-y-auto">
+            
+            {/* Close Button */}
+            <button
+              onClick={() => setIsHelplineModalOpen(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-full text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition cursor-pointer"
+            >
+              <X size={18} />
+            </button>
+
+            {/* Header */}
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-xl bg-red-50 text-[#800000] flex items-center justify-center shrink-0">
+                <PhoneCall size={20} />
+              </div>
+              <div>
+                <h3 className="text-base sm:text-lg font-bold text-gray-900">
+                  {t('faq_modal_helpline_title', 'Constituency Direct Helplines')}
+                </h3>
+                <p className="text-xs text-gray-500">
+                  {t('faq_modal_helpline_subtitle', 'Call or message directly with the Kallakurichi MLA Constituency team.')}
+                </p>
+              </div>
+            </div>
+
+            {/* Helpline Numbers List */}
+            <div className="space-y-3 mb-6">
+              
+              {/* Helpline Mobile */}
+              <div className="p-3.5 rounded-xl border border-gray-200 bg-gray-50/70 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wide block">
+                    {t('contact_phone_helpline_label', 'Constituency Helpline')}
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-gray-900 block truncate">
+                    +91 98765 43210
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleCopy('+919876543210', 'mobile')}
+                    title="Copy Number"
+                    className="p-2 rounded-lg bg-white border border-gray-200 hover:border-gray-400 text-gray-600 transition cursor-pointer shadow-2xs"
+                  >
+                    {copiedKey === 'mobile' ? <Check size={15} className="text-emerald-600" /> : <Copy size={15} />}
+                  </button>
+                  <a
+                    href="tel:+919876543210"
+                    className="px-3 py-1.5 bg-[#800000] hover:bg-[#680000] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
+                  >
+                    <Phone size={12} />
+                    <span>{t('faq_modal_call_now', 'Call')}</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Office Landline */}
+              <div className="p-3.5 rounded-xl border border-gray-200 bg-gray-50/70 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wide block">
+                    {t('contact_phone_landline_label', 'Office Landline')}
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-gray-900 block truncate">
+                    04151-228802
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleCopy('04151228802', 'landline')}
+                    title="Copy Number"
+                    className="p-2 rounded-lg bg-white border border-gray-200 hover:border-gray-400 text-gray-600 transition cursor-pointer shadow-2xs"
+                  >
+                    {copiedKey === 'landline' ? <Check size={15} className="text-emerald-600" /> : <Copy size={15} />}
+                  </button>
+                  <a
+                    href="tel:04151228802"
+                    className="px-3 py-1.5 bg-[#800000] hover:bg-[#680000] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1"
+                  >
+                    <Phone size={12} />
+                    <span>{t('faq_modal_call_now', 'Call')}</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* WhatsApp Support */}
+              <div className="p-3.5 rounded-xl border border-emerald-200 bg-emerald-50/50 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <span className="text-[11px] font-bold text-emerald-800 uppercase tracking-wide block">
+                    {t('contact_whatsapp_label', 'WhatsApp Support')}
+                  </span>
+                  <span className="text-sm sm:text-base font-bold text-gray-900 block truncate">
+                    +91 98765 43210
+                  </span>
+                </div>
+                <a
+                  href="https://wa.me/919876543210?text=Vanakkam%20MLA%20Office"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-3 py-1.5 bg-[#25D366] hover:bg-[#20bd5a] text-white text-xs font-bold rounded-lg transition shadow-2xs flex items-center gap-1 shrink-0"
+                >
+                  <span>{t('faq_modal_whatsapp', 'WhatsApp')}</span>
+                  <ExternalLink size={12} />
+                </a>
+              </div>
+
+            </div>
+
+            {/* Emergency 24/7 Grid */}
+            <div className="pt-4 border-t border-gray-100">
+              <span className="text-[11px] font-bold text-gray-500 uppercase tracking-wider block mb-2.5">
+                {t('faq_modal_emergency_header', '24/7 Government Emergency Services')}
+              </span>
+              <div className="grid grid-cols-4 gap-2 text-center">
+                <a
+                  href="tel:108"
+                  className="p-2 rounded-xl bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 transition flex flex-col items-center"
+                >
+                  <HeartPulse size={16} className="text-emerald-700 mb-1" />
+                  <span className="text-xs font-black text-emerald-900">108</span>
+                  <span className="text-[10px] text-emerald-700 font-medium truncate w-full">Ambulance</span>
+                </a>
+                <a
+                  href="tel:100"
+                  className="p-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 transition flex flex-col items-center"
+                >
+                  <ShieldAlert size={16} className="text-blue-700 mb-1" />
+                  <span className="text-xs font-black text-blue-900">100</span>
+                  <span className="text-[10px] text-blue-700 font-medium truncate w-full">Police</span>
+                </a>
+                <a
+                  href="tel:101"
+                  className="p-2 rounded-xl bg-red-50 hover:bg-red-100 border border-red-200 transition flex flex-col items-center"
+                >
+                  <Flame size={16} className="text-red-700 mb-1" />
+                  <span className="text-xs font-black text-red-900">101</span>
+                  <span className="text-[10px] text-red-700 font-medium truncate w-full">Fire</span>
+                </a>
+                <a
+                  href="tel:1091"
+                  className="p-2 rounded-xl bg-purple-50 hover:bg-purple-100 border border-purple-200 transition flex flex-col items-center"
+                >
+                  <PhoneCall size={16} className="text-purple-700 mb-1" />
+                  <span className="text-xs font-black text-purple-900">1091</span>
+                  <span className="text-[10px] text-purple-700 font-medium truncate w-full">Women</span>
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <Footer />
       <MobileNav />

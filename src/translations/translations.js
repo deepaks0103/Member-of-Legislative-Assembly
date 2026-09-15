@@ -357,6 +357,13 @@ export const translations = {
     faq_step2_desc: 'Our MLA team reviews and routes the complaint to the concerned field department.',
     faq_step3_title: '3. Track Resolution',
     faq_step3_desc: 'Monitor real-time progress using your ID or mobile number until solved.',
+    faq_modal_helpline_title: 'Constituency Direct Helplines',
+    faq_modal_helpline_subtitle: 'Call or message directly with the Kallakurichi MLA Constituency team.',
+    faq_modal_call_now: 'Call',
+    faq_modal_copy: 'Copy',
+    faq_modal_copied: 'Copied!',
+    faq_modal_whatsapp: 'WhatsApp',
+    faq_modal_emergency_header: '24/7 Government Emergency Services',
   },
 
   ta: {
@@ -720,5 +727,12 @@ export const translations = {
     faq_step2_desc: 'சட்டமன்ற உறுப்பினர் குழு புகாரை ஆய்வு செய்து சம்பந்தப்பட்ட துறைக்கு உடனடியாக அனுப்புகிறது.',
     faq_step3_title: '3. தீர்வு நிலையை கண்காணிக்க',
     faq_step3_desc: 'புகார் எண் அல்லது மொபைல் எண் மூலம் பிரச்சனை தீர்க்கப்படும் வரை நிகழ்நேர முன்னேற்றத்தை அறியலாம்.',
+    faq_modal_helpline_title: 'தொகுதி நேரடி உதவி எண்கள்',
+    faq_modal_helpline_subtitle: 'கள்ளக்குறிச்சி சட்டமன்ற தொகுதி அலுவலகத்தை நேரடியாக அழைக்கவும் அல்லது தொடர்பு கொள்ளவும்.',
+    faq_modal_call_now: 'அழைக்க',
+    faq_modal_copy: 'நகலெடு',
+    faq_modal_copied: 'நகலெடுக்கப்பட்டது!',
+    faq_modal_whatsapp: 'வாட்ஸ்அப்',
+    faq_modal_emergency_header: '24/7 அரசு அவசர உதவி எண்கள்',
   },
 };
