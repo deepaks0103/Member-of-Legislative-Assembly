@@ -6,6 +6,7 @@ import EventDetail from './pages/EventDetail';
 import RegisterComplaint from './pages/RegisterComplaint';
 import TrackComplaint from './pages/TrackComplaint';
 import ContactOffice from './pages/ContactOffice';
+import FAQ from './pages/FAQ';
 import BackToTop from './components/BackToTop';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -22,6 +23,8 @@ function App() {
             <Route path="/track-complaint" element={<TrackComplaint />} />
             <Route path="/contact" element={<ContactOffice />} />
             <Route path="/contact-office" element={<ContactOffice />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/help" element={<FAQ />} />
             <Route path="/blog/:slug" element={<EventDetail type="blog" />} />
             <Route path="/events/:slug" element={<EventDetail type="events" />} />
             {/* Catch-all fallback so undefined routes never render a blank page */}
