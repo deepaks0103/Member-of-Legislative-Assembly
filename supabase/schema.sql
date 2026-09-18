@@ -142,33 +142,53 @@ CREATE INDEX IF NOT EXISTS idx_complaints_created_at ON public.complaints(create
 ALTER TABLE public.complaints ENABLE ROW LEVEL SECURITY;
 
 -- 1. Anyone (public / anon) can INSERT a complaint
+DROP POLICY IF EXISTS "Public can submit complaints" ON public.complaints;
 CREATE POLICY "Public can submit complaints"
     ON public.complaints
     FOR INSERT
     TO anon, authenticated
     WITH CHECK (true);
 
--- 2. Policy allowing anon/public SELECT by specific complaint_id
-CREATE POLICY "Public can view complaint by complaint_id"
-    ON public.complaints
-    FOR SELECT
-    TO anon
-    USING (complaint_id IS NOT NULL);
-
--- 3. Authenticated staff can view all complaints
+-- 2. Staff (authenticated users only) can view all complaints
+DROP POLICY IF EXISTS "Staff can view all complaints" ON public.complaints;
+DROP POLICY IF EXISTS "Public can view complaint by complaint_id" ON public.complaints;
 CREATE POLICY "Staff can view all complaints"
     ON public.complaints
     FOR SELECT
     TO authenticated
     USING (true);
 
--- 4. Authenticated staff can update status/details on any complaint
+-- 3. Authenticated staff can update status/details on any complaint
+DROP POLICY IF EXISTS "Staff can update complaints" ON public.complaints;
 CREATE POLICY "Staff can update complaints"
     ON public.complaints
     FOR UPDATE
     TO authenticated
     USING (true)
     WITH CHECK (true);
+
+-- 4. Secure Function for Complaint ID Lookup (SECURITY DEFINER)
+-- Allows public tracking by specific Complaint ID without exposing entire table to public SELECT
+CREATE OR REPLACE FUNCTION public.get_complaint_by_id(p_complaint_id TEXT)
+RETURNS SETOF public.complaints
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public
+AS $$
+BEGIN
+    IF p_complaint_id IS NULL OR trim(p_complaint_id) = '' THEN
+        RETURN;
+    END IF;
+
+    RETURN QUERY
+    SELECT *
+    FROM public.complaints
+    WHERE upper(complaint_id) = upper(trim(p_complaint_id))
+    LIMIT 1;
+END;
+$$;
+
+GRANT EXECUTE ON FUNCTION public.get_complaint_by_id(TEXT) TO anon, authenticated;
 
 -- 5. Secure Function for Mobile Lookup (SECURITY DEFINER)
 -- Bypasses general table scan permissions while restricting output strictly to matching mobile

@@ -201,14 +201,30 @@ const TrackComplaint = () => {
     setMobileResults([]);
 
     try {
-      // 1. Query Supabase complaints table by complaint_id
-      const { data, error } = await supabase
-        .from('complaints')
-        .select('*')
-        .eq('complaint_id', cleanId)
-        .maybeSingle();
+      // 1. Query Supabase complaints table by complaint_id (try secure RPC first, then direct query)
+      let data = null;
+      try {
+        const { data: rpcData, error: rpcError } = await supabase
+          .rpc('get_complaint_by_id', { p_complaint_id: cleanId });
+        if (!rpcError && Array.isArray(rpcData) && rpcData.length > 0) {
+          data = rpcData[0];
+        }
+      } catch (rpcErr) {
+        // Fallback to direct query if RPC not yet created
+      }
 
-      if (!error && data) {
+      if (!data) {
+        const { data: directData, error: directError } = await supabase
+          .from('complaints')
+          .select('*')
+          .eq('complaint_id', cleanId)
+          .maybeSingle();
+        if (!directError && directData) {
+          data = directData;
+        }
+      }
+
+      if (data) {
         let historyData = [];
         try {
           const { data: hist } = await supabase

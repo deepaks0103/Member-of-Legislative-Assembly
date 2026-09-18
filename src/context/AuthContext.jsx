@@ -35,14 +35,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // 1. Check current session on mount
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        fetchStaffProfile(session.user.id);
-      }
-      setLoading(false);
-    });
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          fetchStaffProfile(session.user.id);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('[Auth] Error getting session on mount:', err);
+        setSession(null);
+        setUser(null);
+        setStaffProfile(null);
+        setLoading(false);
+      });
 
     // 2. Subscribe to auth changes (sign in, sign out, token refresh)
     const {
