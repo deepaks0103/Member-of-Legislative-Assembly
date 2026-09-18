@@ -17,6 +17,7 @@ const Navbar = () => {
   const navLinksAfter = [
     { name: t('nav_contact', 'Contact Office'), path: '/contact' },
     { name: t('nav_faq', 'Help / FAQ'), path: '/faq' },
+    { name: t('nav_login', 'Login'), path: '/login' },
   ];
 
   return (
@@ -48,8 +49,8 @@ const Navbar = () => {
                 key={index}
                 to={link.path}
                 className={`nav-link font-semibold transition whitespace-nowrap ${location.pathname === link.path
-                    ? 'text-primary border-b-2 border-primary pb-1'
-                    : 'text-primary/80 hover:text-primary'
+                  ? 'text-primary border-b-2 border-primary pb-1'
+                  : 'text-primary/80 hover:text-primary'
                   }`}
               >
                 {link.name}
@@ -64,8 +65,8 @@ const Navbar = () => {
                 title="தமிழுக்கு மாற்றவும்"
                 aria-label="Switch to Tamil"
                 className={`lang-switch-btn px-2.5 py-1 text-xs font-bold rounded-full transition-all duration-200 cursor-pointer ${language === 'ta'
-                    ? 'bg-primary text-secondary shadow-sm font-bold scale-100'
-                    : 'text-primary/80 hover:text-primary hover:bg-primary/10'
+                  ? 'bg-primary text-secondary shadow-sm font-bold scale-100'
+                  : 'text-primary/80 hover:text-primary hover:bg-primary/10'
                   }`}
               >
                 தமிழ்
@@ -76,8 +77,8 @@ const Navbar = () => {
                 title="Switch to English"
                 aria-label="Switch to English"
                 className={`lang-switch-btn px-2.5 py-1 text-xs font-bold rounded-full transition-all duration-200 cursor-pointer ${language === 'en'
-                    ? 'bg-primary text-secondary shadow-sm font-bold scale-100'
-                    : 'text-primary/80 hover:text-primary hover:bg-primary/10'
+                  ? 'bg-primary text-secondary shadow-sm font-bold scale-100'
+                  : 'text-primary/80 hover:text-primary hover:bg-primary/10'
                   }`}
               >
                 ENG
@@ -89,8 +90,8 @@ const Navbar = () => {
                 key={index}
                 to={link.path}
                 className={`nav-link font-semibold transition whitespace-nowrap ${location.pathname === link.path
-                    ? 'text-primary border-b-2 border-primary pb-1'
-                    : 'text-primary/80 hover:text-primary'
+                  ? 'text-primary border-b-2 border-primary pb-1'
+                  : 'text-primary/80 hover:text-primary'
                   }`}
               >
                 {link.name}
@@ -169,8 +170,8 @@ const Navbar = () => {
                       setIsMobileMenuOpen(false);
                     }}
                     className={`flex-1 py-1.5 text-xs font-bold rounded-md text-center transition cursor-pointer ${language === 'ta'
-                        ? 'bg-primary text-secondary shadow-sm font-bold'
-                        : 'bg-primary/10 text-primary hover:bg-primary/20'
+                      ? 'bg-primary text-secondary shadow-sm font-bold'
+                      : 'bg-primary/10 text-primary hover:bg-primary/20'
                       }`}
                   >
                     தமிழ்
@@ -182,8 +183,8 @@ const Navbar = () => {
                       setIsMobileMenuOpen(false);
                     }}
                     className={`flex-1 py-1.5 text-xs font-bold rounded-md text-center transition cursor-pointer ${language === 'en'
-                        ? 'bg-primary text-secondary shadow-sm font-bold'
-                        : 'bg-primary/10 text-primary hover:bg-primary/20'
+                      ? 'bg-primary text-secondary shadow-sm font-bold'
+                      : 'bg-primary/10 text-primary hover:bg-primary/20'
                       }`}
                   >
                     ENG

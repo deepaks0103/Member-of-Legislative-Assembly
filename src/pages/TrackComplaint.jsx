@@ -32,8 +32,115 @@ import Footer from '../components/Footer';
 import MobileNav from '../components/MobileNav';
 import { useLanguage } from '../context/LanguageContext';
 import { grievanceCategoriesData } from '../data/grievanceCategories';
+import { supabase } from '../lib/supabaseClient';
 
-// Retrieve grievances registered in the current session / browser
+// Format timestamps matching the "17 Sept 2026, 11:25 am" style
+const formatStageTimestamp = (dateVal) => {
+  if (!dateVal) return null;
+  const d = new Date(dateVal);
+  if (isNaN(d.getTime())) return null;
+  return d.toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric'
+  }) + ', ' + d.toLocaleTimeString('en-IN', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  });
+};
+
+// Normalize Supabase complaints table row to UI expected structure with stage timestamps
+const normalizeComplaint = (row, historyList = []) => {
+  if (!row) return null;
+
+  let statusKey = (row.status || 'submitted').toLowerCase().replace(/\s+/g, '_');
+  if (statusKey === 'in_review') statusKey = 'under_review';
+
+  const formattedSubmittedDate = formatStageTimestamp(row.created_at || Date.now());
+
+  const isSubmitted = true;
+  const isUnderReview = statusKey === 'under_review' || statusKey === 'assigned' || statusKey === 'action_taken' || statusKey === 'resolved';
+  const isAssigned = statusKey === 'assigned' || statusKey === 'action_taken' || statusKey === 'resolved';
+  const isActionTaken = statusKey === 'action_taken' || statusKey === 'resolved';
+  const isResolved = statusKey === 'resolved';
+
+  let displayStatus = 'Submitted';
+  if (statusKey === 'under_review') displayStatus = 'Under Review';
+  else if (statusKey === 'assigned') displayStatus = 'Assigned';
+  else if (statusKey === 'action_taken') displayStatus = 'Action Taken';
+  else if (statusKey === 'resolved') displayStatus = 'Resolved';
+  else if (statusKey === 'rejected') displayStatus = 'Rejected';
+  else if (row.status) {
+    displayStatus = row.status.charAt(0).toUpperCase() + row.status.slice(1).replace(/_/g, ' ');
+  }
+
+  // Find actual changed_at timestamp for each stage from history
+  const getStageTimestamp = (stageKey, isCompleted) => {
+    if (!isCompleted) return null;
+
+    if (Array.isArray(historyList) && historyList.length > 0) {
+      const match = historyList.find((h) => {
+        let hs = (h.status || '').toLowerCase().replace(/\s+/g, '_');
+        if (hs === 'in_review') hs = 'under_review';
+        return hs === stageKey;
+      });
+      if (match?.changed_at) {
+        return formatStageTimestamp(match.changed_at);
+      }
+    }
+
+    if (stageKey === 'submitted') {
+      return formattedSubmittedDate;
+    }
+
+    // Fallback if stage reached but no granular history record exists
+    return formatStageTimestamp(row.updated_at || row.created_at);
+  };
+
+  let parsedSubject = '';
+  let parsedDescription = row.description || '';
+  if (row.description && row.description.startsWith('[') && row.description.includes(']')) {
+    parsedSubject = row.description.substring(1, row.description.indexOf(']')).trim();
+    parsedDescription = row.description.substring(row.description.indexOf(']') + 1).trim();
+  }
+
+  return {
+    id: row.complaint_id || row.id,
+    complaint_id: row.complaint_id || row.id,
+    fullName: row.name || '',
+    name: row.name || '',
+    mobileNumber: row.mobile || '',
+    mobile: row.mobile || '',
+    address: row.address || '',
+    streetLocality: row.address || '',
+    wardArea: '',
+    grievanceType: row.category || 'General',
+    category: row.category || '',
+    subject: parsedSubject || row.category || 'Grievance',
+    description: parsedDescription,
+    status: displayStatus,
+    submittedAt: row.created_at || new Date().toISOString(),
+    gpsLocation: (row.latitude && row.longitude) ? {
+      lat: row.latitude,
+      lng: row.longitude,
+      formattedAddress: row.address,
+      isInsideBoundary: true,
+      boundaryStatus: 'Inside Constituency'
+    } : null,
+    timeline: [
+      { step: 1, key: 'submitted', date: getStageTimestamp('submitted', isSubmitted), done: isSubmitted },
+      { step: 2, key: 'under_review', date: getStageTimestamp('under_review', isUnderReview), done: isUnderReview },
+      { step: 3, key: 'assigned', date: getStageTimestamp('assigned', isAssigned), done: isAssigned },
+      { step: 4, key: 'action_taken', date: getStageTimestamp('action_taken', isActionTaken), done: isActionTaken },
+      { step: 5, key: 'resolved', date: getStageTimestamp('resolved', isResolved), done: isResolved },
+    ],
+    attachments: Array.isArray(row.attachments) ? row.attachments : [],
+    remarks: []
+  };
+};
+
+// Retrieve grievances registered in the current session / browser (fallback)
 const getRegisteredComplaints = () => {
   try {
     const raw = localStorage.getItem('cdo_registered_complaints');
@@ -79,8 +186,8 @@ const TrackComplaint = () => {
     }
   }, [searchParams]);
 
-  // Search By Complaint ID - Searches actual registered complaints
-  const performSearchById = (idToSearch) => {
+  // Search By Complaint ID - Real Supabase Query
+  const performSearchById = async (idToSearch) => {
     const cleanId = (idToSearch || complaintIdInput).trim().toUpperCase();
     setErrorMessage('');
 
@@ -90,27 +197,68 @@ const TrackComplaint = () => {
     }
 
     setIsSearching(true);
+    setActiveComplaint(null);
+    setMobileResults([]);
 
-    setTimeout(() => {
+    try {
+      // 1. Query Supabase complaints table by complaint_id
+      const { data, error } = await supabase
+        .from('complaints')
+        .select('*')
+        .eq('complaint_id', cleanId)
+        .maybeSingle();
+
+      if (!error && data) {
+        let historyData = [];
+        try {
+          const { data: hist } = await supabase
+            .from('complaint_status_history')
+            .select('*')
+            .eq('complaint_id', cleanId)
+            .order('changed_at', { ascending: true });
+          if (Array.isArray(hist)) historyData = hist;
+        } catch (hErr) {
+          console.warn('[Status History Fetch Notice]:', hErr);
+        }
+
+        setActiveComplaint(normalizeComplaint(data, historyData));
+        setMobileResults([]);
+        setErrorMessage('');
+      } else {
+        // Fallback check in local storage if registered in this session
+        const storedComplaints = getRegisteredComplaints();
+        const found = storedComplaints.find(
+          (c) => c.id && (c.id.toUpperCase() === cleanId || c.id.replace(/-/g, '').toUpperCase() === cleanId.replace(/-/g, ''))
+        );
+
+        if (found) {
+          setActiveComplaint(found);
+          setMobileResults([]);
+          setErrorMessage('');
+        } else {
+          setActiveComplaint(null);
+          setErrorMessage(t('track_err_not_found', 'No complaint found matching this ID. Please check the ID or register a new complaint.'));
+        }
+      }
+    } catch (err) {
+      console.error('Search by ID error:', err);
+      // Fallback check in local storage
       const storedComplaints = getRegisteredComplaints();
       const found = storedComplaints.find(
         (c) => c.id && (c.id.toUpperCase() === cleanId || c.id.replace(/-/g, '').toUpperCase() === cleanId.replace(/-/g, ''))
       );
-
       if (found) {
         setActiveComplaint(found);
-        setMobileResults([]);
-        setErrorMessage('');
       } else {
-        setActiveComplaint(null);
         setErrorMessage(t('track_err_not_found', 'No complaint found matching this ID. Please check the ID or register a new complaint.'));
       }
+    } finally {
       setIsSearching(false);
-    }, 400);
+    }
   };
 
-  // Search By Mobile Number - Searches actual registered complaints
-  const performSearchByMobile = (mobileToSearch) => {
+  // Search By Mobile Number - Secure RPC Function + Supabase Query
+  const performSearchByMobile = async (mobileToSearch) => {
     const rawMobile = mobileToSearch !== undefined ? mobileToSearch : mobileInput;
     const cleanedMobile = (rawMobile || '').replace(/\D/g, '');
     setErrorMessage('');
@@ -124,33 +272,110 @@ const TrackComplaint = () => {
     setActiveComplaint(null);
     setMobileResults([]);
 
-    setTimeout(() => {
+    try {
+      // 1. Call secure RPC function get_complaint_by_mobile
+      let records = null;
+      const { data: rpcData, error: rpcError } = await supabase.rpc('get_complaint_by_mobile', {
+        p_mobile: cleanedMobile
+      });
+
+      if (!rpcError && Array.isArray(rpcData)) {
+        records = rpcData;
+      } else {
+        // Fallback direct query if RPC function is not yet deployed in DB
+        const { data: tableData, error: tableError } = await supabase
+          .from('complaints')
+          .select('*')
+          .eq('mobile', cleanedMobile)
+          .order('created_at', { ascending: false });
+        if (!tableError && Array.isArray(tableData)) {
+          records = tableData;
+        }
+      }
+
+      if (records && records.length > 0) {
+        if (records.length === 1) {
+          const singleRecord = records[0];
+          const targetCode = singleRecord.complaint_id || singleRecord.id;
+          let historyData = [];
+          try {
+            const { data: hist } = await supabase
+              .from('complaint_status_history')
+              .select('*')
+              .eq('complaint_id', targetCode)
+              .order('changed_at', { ascending: true });
+            if (Array.isArray(hist)) historyData = hist;
+          } catch (hErr) {
+            console.warn('[Status History Fetch Notice]:', hErr);
+          }
+          setActiveComplaint(normalizeComplaint(singleRecord, historyData));
+          setMobileResults([]);
+          setErrorMessage('');
+        } else {
+          const normalized = records.map((r) => normalizeComplaint(r));
+          setMobileResults(normalized);
+          setActiveComplaint(null);
+          setErrorMessage('');
+        }
+      } else {
+        // Fallback to local storage
+        const storedComplaints = getRegisteredComplaints();
+        const matches = storedComplaints.filter((c) => {
+          const cMobile = (c.mobileNumber || '').replace(/\D/g, '');
+          return cMobile === cleanedMobile;
+        });
+
+        if (matches.length === 1) {
+          setActiveComplaint(matches[0]);
+          setMobileResults([]);
+          setErrorMessage('');
+        } else if (matches.length > 1) {
+          setMobileResults(matches);
+          setActiveComplaint(null);
+          setErrorMessage('');
+        } else {
+          setActiveComplaint(null);
+          setMobileResults([]);
+          setErrorMessage(t('track_err_no_mobile_records', 'No complaints found registered with this mobile number. Please register a new grievance.'));
+        }
+      }
+    } catch (err) {
+      console.error('Search by mobile error:', err);
+      // Fallback to local storage
       const storedComplaints = getRegisteredComplaints();
       const matches = storedComplaints.filter((c) => {
         const cMobile = (c.mobileNumber || '').replace(/\D/g, '');
         return cMobile === cleanedMobile;
       });
-
       if (matches.length === 1) {
         setActiveComplaint(matches[0]);
-        setMobileResults([]);
-        setErrorMessage('');
       } else if (matches.length > 1) {
         setMobileResults(matches);
-        setActiveComplaint(null);
-        setErrorMessage('');
       } else {
-        setActiveComplaint(null);
-        setMobileResults([]);
         setErrorMessage(t('track_err_no_mobile_records', 'No complaints found registered with this mobile number. Please register a new grievance.'));
       }
+    } finally {
       setIsSearching(false);
-    }, 400);
+    }
   };
 
-  // Select a grievance from mobile list
-  const handleSelectFromList = (complaint) => {
-    setActiveComplaint(complaint);
+  // Select a grievance from mobile list and fetch its history
+  const handleSelectFromList = async (complaint) => {
+    const targetCode = complaint.complaint_id || complaint.id;
+    try {
+      const { data: hist } = await supabase
+        .from('complaint_status_history')
+        .select('*')
+        .eq('complaint_id', targetCode)
+        .order('changed_at', { ascending: true });
+      if (Array.isArray(hist) && hist.length > 0) {
+        setActiveComplaint(normalizeComplaint(complaint, hist));
+      } else {
+        setActiveComplaint(complaint);
+      }
+    } catch {
+      setActiveComplaint(complaint);
+    }
     window.scrollTo({ top: 400, behavior: 'smooth' });
   };
 
@@ -255,13 +480,13 @@ const TrackComplaint = () => {
   // Calculate current stage index based on complaint status
   const currentStageIndex = useMemo(() => {
     if (!activeComplaint) return 0;
-    const s = (activeComplaint.status || '').toLowerCase().replace(/\s+/g, '_');
+    let s = (activeComplaint.status || '').toLowerCase().replace(/\s+/g, '_');
+    if (s === 'in_review') s = 'under_review';
     if (s === 'submitted') return 0;
     if (s === 'under_review') return 1;
     if (s === 'assigned') return 2;
     if (s === 'action_taken') return 3;
     if (s === 'resolved') return 4;
-    if (s === 'rejected') return 1; // Rejected halts after review
     return 0;
   }, [activeComplaint]);
 
@@ -582,7 +807,7 @@ const TrackComplaint = () => {
               </div>
 
               {/* REJECTION / QUEUED BANNER */}
-              {activeComplaint.status === 'Rejected' && (
+              {(activeComplaint.status || '').toLowerCase() === 'rejected' && (
                 <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl flex items-start gap-3 text-rose-900">
                   <ShieldAlert size={20} className="text-rose-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
@@ -594,7 +819,7 @@ const TrackComplaint = () => {
                 </div>
               )}
 
-              {activeComplaint.status === 'Submitted' && (
+              {(activeComplaint.status || '').toLowerCase() === 'submitted' && (
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl flex items-start gap-3 text-blue-900">
                   <Info size={20} className="text-blue-600 shrink-0 mt-0.5" />
                   <div className="space-y-1">
@@ -607,7 +832,7 @@ const TrackComplaint = () => {
               )}
 
               {/* 5-STAGE RESPONSIVE TIMELINE STEPPER */}
-              {activeComplaint.status !== 'Rejected' && (
+              {(activeComplaint.status || '').toLowerCase() !== 'rejected' && (
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="section-title">
@@ -633,8 +858,9 @@ const TrackComplaint = () => {
 
                       {/* Stepper Nodes */}
                       {stepperStages.map((stage, idx) => {
-                        const isCompleted = idx < currentStageIndex || (idx === currentStageIndex && activeComplaint.status === 'Resolved');
-                        const isCurrent = idx === currentStageIndex && activeComplaint.status !== 'Resolved';
+                        const isResolvedStatus = (activeComplaint.status || '').toLowerCase() === 'resolved';
+                        const isCompleted = idx < currentStageIndex || (idx === currentStageIndex && isResolvedStatus);
+                        const isCurrent = idx === currentStageIndex && !isResolvedStatus;
 
                         const timelineMatch = activeComplaint.timeline?.find((t) => t.step === stage.num);
                         const timestamp = timelineMatch?.date;
@@ -692,8 +918,9 @@ const TrackComplaint = () => {
                   {/* Mobile Vertical Stepper (<lg) */}
                   <div className="block lg:hidden space-y-6 pt-2 relative pl-6 border-l-2 border-gray-200 ml-4">
                     {stepperStages.map((stage, idx) => {
-                      const isCompleted = idx < currentStageIndex || (idx === currentStageIndex && activeComplaint.status === 'Resolved');
-                      const isCurrent = idx === currentStageIndex && activeComplaint.status !== 'Resolved';
+                      const isResolvedStatus = (activeComplaint.status || '').toLowerCase() === 'resolved';
+                      const isCompleted = idx < currentStageIndex || (idx === currentStageIndex && isResolvedStatus);
+                      const isCurrent = idx === currentStageIndex && !isResolvedStatus;
 
                       const timelineMatch = activeComplaint.timeline?.find((t) => t.step === stage.num);
                       const timestamp = timelineMatch?.date;

@@ -24,6 +24,7 @@ import MobileNav from '../components/MobileNav';
 import LocationCapture from '../components/LocationCapture';
 import { grievanceCategoriesData, defaultCategories, grievanceTypes } from '../data/grievanceCategories';
 import { useLanguage } from '../context/LanguageContext';
+import { supabase } from '../lib/supabaseClient';
 
 const wardsList = [
   { id: 'w1', en: 'Ward 1 - Raja Desingh Nagar', ta: 'வார்டு 1 - ராஜா தேசிங்கு நகர்' },
@@ -351,8 +352,8 @@ const RegisterComplaint = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Submit Handler - Pure Frontend Local Mock
-  const handleSubmit = (e) => {
+  // Submit Handler - Real Supabase Database & Storage Integration
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError('');
 
@@ -419,45 +420,192 @@ const RegisterComplaint = () => {
       hour12: true
     });
 
-    const randomNum = Math.floor(10000 + Math.random() * 90000);
-    const generatedId = `KLK-${now.getFullYear()}-${randomNum}`;
-
-    const complaintRecord = {
-      id: generatedId,
-      ...formData,
-      gpsLocation: gpsLocation ? {
-        lat: gpsLocation.lat,
-        lng: gpsLocation.lng,
-        formattedAddress: gpsLocation.formattedAddress,
-        isInsideBoundary: gpsLocation.isInsideBoundary,
-        boundaryStatus: gpsLocation.boundaryStatus,
-      } : null,
-      hasAudio: Boolean(audioBlob || audioUrl),
-      attachmentCount: attachments.length,
-      attachments: attachments.map(a => ({ name: a.name, size: a.size + ' MB', type: a.type, url: a.previewUrl })),
-      status: 'Submitted',
-      submittedAt: now.toISOString(),
-      timeline: [
-        { step: 1, key: 'submitted', date: formattedDate, done: true },
-        { step: 2, key: 'under_review', date: null, done: false },
-        { step: 3, key: 'assigned', date: null, done: false },
-        { step: 4, key: 'action_taken', date: null, done: false },
-        { step: 5, key: 'resolved', date: null, done: false },
-      ],
-      remarks: []
-    };
-
     try {
-      const existing = JSON.parse(localStorage.getItem('cdo_registered_complaints') || '[]');
-      localStorage.setItem('cdo_registered_complaints', JSON.stringify([complaintRecord, ...existing]));
-    } catch (err) {
-      console.warn('Could not save complaint to localStorage:', err);
-    }
+      // Generate a unique complaint_id in format KLK-<current year>-<5-digit random number (10000-99999)>
+      const currentYear = now.getFullYear();
+      let trackingCode = '';
+      let isUnique = false;
 
-    setTimeout(() => {
+      while (!isUnique) {
+        const randomNum = Math.floor(10000 + Math.random() * 90000);
+        const candidateCode = `KLK-${currentYear}-${randomNum}`;
+
+        const { data: existingRecord, error: checkError } = await supabase
+          .from('complaints')
+          .select('complaint_id')
+          .eq('complaint_id', candidateCode)
+          .maybeSingle();
+
+        if (checkError) {
+          console.warn('[Supabase Unique ID Check Warning]:', checkError);
+          trackingCode = candidateCode;
+          break;
+        }
+
+        if (!existingRecord) {
+          trackingCode = candidateCode;
+          isUnique = true;
+        }
+      }
+
+      // 1. Insert complaint row into Supabase 'complaints' table first (without attachments column)
+      const resolvedAddress = (
+        gpsLocation?.formattedAddress ||
+        [formData.address.trim(), formData.streetLocality.trim(), formData.wardArea].filter(Boolean).join(', ')
+      ).trim();
+
+      const combinedDescription = formData.subject.trim()
+        ? `[${formData.subject.trim()}] ${formData.description.trim()}`
+        : formData.description.trim();
+
+      const complaintPayload = {
+        complaint_id: trackingCode,
+        name: formData.fullName.trim(),
+        mobile: cleanedMobile,
+        address: resolvedAddress,
+        latitude: gpsLocation?.lat ? Number(gpsLocation.lat) : null,
+        longitude: gpsLocation?.lng ? Number(gpsLocation.lng) : null,
+        category: formData.category || formData.grievanceType,
+        description: combinedDescription,
+        status: 'submitted'
+      };
+
+      const { data: insertResult, error: insertError } = await supabase
+        .from('complaints')
+        .insert([complaintPayload])
+        .select()
+        .single();
+
+      if (insertError) {
+        console.error('[Supabase Insert Error]:', insertError);
+        throw insertError;
+      }
+
+      const confirmedTrackingId = insertResult?.complaint_id || trackingCode;
+
+      // Insert initial status history record (status = "Submitted")
+      try {
+        await supabase
+          .from('complaint_status_history')
+          .insert([{
+            complaint_id: confirmedTrackingId,
+            status: 'Submitted',
+            changed_at: now.toISOString(),
+            changed_by: 'Citizen'
+          }]);
+      } catch (histErr) {
+        console.warn('[Status History Initial Insert Notice]:', histErr);
+      }
+
+      // 2. Upload file attachments to Supabase Storage bucket 'complaint-attachments'
+      const uploadedAttachmentList = [];
+
+      for (let i = 0; i < attachments.length; i++) {
+        const item = attachments[i];
+        if (item.file) {
+          const sanitizedFileName = item.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          const storagePath = `${confirmedTrackingId}/${Date.now()}_${i}_${sanitizedFileName}`;
+
+          const { data: uploadResult, error: uploadErr } = await supabase.storage
+            .from('complaint-attachments')
+            .upload(storagePath, item.file, {
+              cacheControl: '3600',
+              upsert: false
+            });
+
+          if (!uploadErr && uploadResult) {
+            const { data: { publicUrl } } = supabase.storage
+              .from('complaint-attachments')
+              .getPublicUrl(storagePath);
+
+            uploadedAttachmentList.push({
+              name: item.name,
+              size: item.size + ' MB',
+              type: item.type,
+              url: publicUrl,
+              storagePath
+            });
+          } else {
+            console.warn('[Storage] Upload notice:', uploadErr?.message);
+            uploadedAttachmentList.push({
+              name: item.name,
+              size: item.size + ' MB',
+              type: item.type,
+              url: item.previewUrl || ''
+            });
+          }
+        }
+      }
+
+      // 3. Upload voice recording audio if present
+      if (audioBlob) {
+        const audioStoragePath = `${confirmedTrackingId}/${Date.now()}_voice_note.webm`;
+        const { data: audioUploadData, error: audioUploadErr } = await supabase.storage
+          .from('complaint-attachments')
+          .upload(audioStoragePath, audioBlob, {
+            contentType: 'audio/webm',
+            cacheControl: '3600',
+            upsert: false
+          });
+
+        if (!audioUploadErr && audioUploadData) {
+          const { data: { publicUrl } } = supabase.storage
+            .from('complaint-attachments')
+            .getPublicUrl(audioStoragePath);
+
+          uploadedAttachmentList.push({
+            name: 'Voice Note Recording',
+            size: 'Audio',
+            type: 'audio/webm',
+            url: publicUrl,
+            storagePath: audioStoragePath
+          });
+        }
+      }
+
+      const displayRecord = {
+        id: confirmedTrackingId,
+        ...formData,
+        gpsLocation: gpsLocation ? {
+          lat: gpsLocation.lat,
+          lng: gpsLocation.lng,
+          formattedAddress: gpsLocation.formattedAddress,
+          isInsideBoundary: gpsLocation.isInsideBoundary,
+          boundaryStatus: gpsLocation.boundaryStatus,
+        } : null,
+        hasAudio: Boolean(audioBlob || audioUrl),
+        attachmentCount: uploadedAttachmentList.length,
+        attachments: uploadedAttachmentList,
+        status: 'Submitted',
+        submittedAt: now.toISOString(),
+        timeline: [
+          { step: 1, key: 'submitted', date: formattedDate, done: true },
+          { step: 2, key: 'under_review', date: null, done: false },
+          { step: 3, key: 'assigned', date: null, done: false },
+          { step: 4, key: 'action_taken', date: null, done: false },
+          { step: 5, key: 'resolved', date: null, done: false },
+        ],
+        remarks: []
+      };
+
+      // Keep local storage synced for instant offline lookup
+      try {
+        const existing = JSON.parse(localStorage.getItem('cdo_registered_complaints') || '[]');
+        localStorage.setItem('cdo_registered_complaints', JSON.stringify([displayRecord, ...existing]));
+      } catch (err) {
+        console.warn('LocalStorage notice:', err);
+      }
+
+      setSubmittedData(displayRecord);
+    } catch (err) {
+      console.error('Complaint submission error:', err);
+      setSubmitError(
+        err?.message ||
+        t('err_submit_failed', 'Unable to submit your complaint. Please check your connection and try again.')
+      );
+    } finally {
       setIsSubmitting(false);
-      setSubmittedData(complaintRecord);
-    }, 600);
+    }
   };
 
   const handleCopyId = () => {
